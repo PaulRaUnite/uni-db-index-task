@@ -1,3 +1,2 @@
-postgres:
-  database: used_cars
-  password: password
+db:
+  url: postgres://postgres@localhost/shop?sslmode=disable&client_encoding=utf8

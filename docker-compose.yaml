@@ -1,13 +1,11 @@
 version: '3'
 
 services:
-  cars-db:
-    volumes:
-      - ./used-cars-data:/var/lib/postgresql/data
+  shop-db:
     image: postgres:alpine
     ports:
       - "5432:5432"
     restart: always
     environment:
-      POSTGRES_DB: used-cars
-      POSTGRES_PASSWORD: password
+      POSTGRES_DB: shop
+      POSTGRES_PASSWORD:
