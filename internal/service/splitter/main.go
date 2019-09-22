@@ -21,9 +21,11 @@ func Run(splitFrom io.Reader, fromPath, splitInto string, lineCount int) error {
 	}
 	if file80 != nil {
 		defer file80.Close()
+		defer file80.Sync()
 	}
 	if file20 != nil {
 		defer file20.Close()
+		defer file20.Sync()
 	}
 	file80W := bufio.NewWriter(file80)
 	file20W := bufio.NewWriter(file20)
@@ -71,13 +73,15 @@ func writeHeader(header []byte, file80W *bufio.Writer, file20W *bufio.Writer) er
 var check = []byte(",check,")
 var comma = []byte(",")
 var spaceComma = []byte(" ,")
+var doubleComma = []byte(",,")
 
 func writeLine(file *bufio.Writer, line []byte) error {
 
 	if !(48 <= line[0] && line[0] <= 57) ||
 		bytes.Contains(line, check) ||
 		!utf8.Valid(line) ||
-		bytes.Count(line, comma) != 7 {
+		bytes.Count(line, comma) != 7 ||
+		bytes.Contains(line, doubleComma) {
 		return nil
 	}
 	line = bytes.ReplaceAll(line, spaceComma, comma)

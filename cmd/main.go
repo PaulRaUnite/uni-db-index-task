@@ -44,12 +44,14 @@ func main() {
 
 	switch cmd {
 	case topCmd.FullCommand():
+		defer (*fileArg).Close()
 		err := topper.Run(*fileArg, *limitArg)
 		if err != nil {
 			log.Fatalln(errors.Wrap(err, "failed to print top records"))
 		}
 	case splitCmd.FullCommand():
 		splitFrom := *splitFrom
+		defer splitFrom.Close()
 		lineCount, err := lineCounter(splitFrom)
 		if err != nil {
 			log.Fatalln(err)
@@ -64,7 +66,9 @@ func main() {
 		}
 	case loadCmd.FullCommand():
 		cfg := config.NewConfig(kv.MustFromEnv())
+		defer (*loadFileArg).Close()
 		err = loader.Run(cfg, *loadFileArg)
+
 		if err != nil {
 			log.Fatalln(errors.Wrap(err, "failed to load records to database"))
 		}
