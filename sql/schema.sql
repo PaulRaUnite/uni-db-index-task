@@ -27,4 +27,3 @@ create table invoice_parts
     quantity   INT                             NOT NULL,
     invoice_id BIGINT REFERENCES invoices (id) NOT NULL
 );
-
