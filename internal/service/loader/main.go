@@ -3,7 +3,6 @@ package loader
 import (
 	"encoding/csv"
 	"io"
-	"log"
 
 	"github.com/shopspring/decimal"
 
@@ -16,11 +15,16 @@ import (
 	"github.com/pkg/errors"
 )
 
+type good struct {
+	id          int
+	latestPrice decimal.Decimal
+	updated     bool
+}
 type impl struct {
 	db        *pgdb.DB
 	source    *gocsv.Unmarshaller
 	customers map[int]struct{}
-	goods     map[string]int
+	goods     map[string]good
 	invoices  map[int]struct{}
 }
 
@@ -30,13 +34,18 @@ func Run(cfg config.Config, source io.Reader) error {
 		return errors.Wrap(err, "failed to create unmarshaller")
 	}
 	i := impl{
-		db:        cfg.DB(),
-		source:    unm,
-		customers: make(map[int]struct{}, 512),
-		goods:     make(map[string]int, 512),
-		invoices:  make(map[int]struct{}, 512),
+		db:     cfg.DB(),
+		source: unm,
 	}
-	return i.runOnce()
+	err = i.preLoad()
+	if err != nil {
+		return errors.Wrap(err, "failed to preload records")
+	}
+	err = i.runOnce()
+	if err != nil {
+		return err
+	}
+	return errors.Wrap(i.dumpPrices(), "failed to dump prices")
 }
 
 func (i *impl) runOnce() error {
@@ -50,10 +59,61 @@ func (i *impl) runOnce() error {
 		}
 		err = i.upsertInvoicePart(record.(data.Record))
 		if err != nil {
-			log.Println(record)
-			return errors.Wrap(err, "failed to save record in database")
+			return errors.Wrapf(err, "failed to save record in database: %v", record)
 		}
 	}
+}
+
+func (i *impl) preLoad() error {
+	var ids []struct{ ID int }
+	err := i.db.Select(&ids, squirrel.Select("id").From("customers"))
+	if err != nil {
+		return err
+	}
+	i.customers = make(map[int]struct{}, 2*len(ids))
+	for _, record := range ids {
+		i.customers[record.ID] = struct{}{}
+	}
+
+	ids = nil
+	err = i.db.Select(&ids, squirrel.Select("id").From("invoices"))
+	if err != nil {
+		return err
+	}
+	i.invoices = make(map[int]struct{}, 2*len(ids))
+	for _, record := range ids {
+		i.invoices[record.ID] = struct{}{}
+	}
+	var goods []struct {
+		ID    int
+		Code  string
+		Price decimal.Decimal
+	}
+	err = i.db.Select(&goods, squirrel.Select("id", "code", "price").From("goods"))
+	if err != nil {
+		return err
+	}
+	i.goods = make(map[string]good, 2*len(goods))
+	for _, record := range goods {
+		i.goods[record.Code] = good{id: record.ID, latestPrice: record.Price}
+	}
+	return nil
+}
+
+func (i *impl) dumpPrices() error {
+	for _, r := range i.goods {
+		if !r.updated {
+			continue
+		}
+		err := i.db.Exec(squirrel.Update("goods").
+			Where(squirrel.Eq{"id": r.id}).
+			SetMap(map[string]interface{}{"price": r.latestPrice}),
+		)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func (i *impl) upsertInvoicePart(record data.Record) error {
@@ -92,19 +152,6 @@ func (i *impl) upsertInvoice(record data.Record) error {
 		return nil
 	}
 
-	selectQuery := squirrel.Select("id").
-		From("invoices").
-		Where(squirrel.Eq{"id": record.InvoiceNo})
-	var ids []struct{ ID int }
-	err := i.db.Select(&ids, selectQuery)
-	if err == nil && len(ids) != 0 {
-		i.invoices[record.InvoiceNo] = struct{}{}
-		return nil
-	}
-	if err != nil {
-		return errors.Wrap(err, "failed to select invoices")
-	}
-
 	insertQuery := squirrel.Insert("invoices").
 		SetMap(map[string]interface{}{
 			"id":                  record.InvoiceNo,
@@ -113,7 +160,7 @@ func (i *impl) upsertInvoice(record data.Record) error {
 			"invoice_date":        record.InvoiceDate.Format(postgrestimestampFormat),
 		})
 
-	err = i.db.Exec(insertQuery)
+	err := i.db.Exec(insertQuery)
 	if err != nil {
 		return errors.Wrap(err, "failed to insert into invoices")
 	}
@@ -126,25 +173,12 @@ func (i *impl) upsertCustomer(customerID int) error {
 		return nil
 	}
 
-	selectQuery := squirrel.Select("id").
-		From("customers").
-		Where(squirrel.Eq{"id": customerID})
-	var ids []struct{ ID int }
-	err := i.db.Select(&ids, selectQuery)
-	if err == nil && len(ids) != 0 {
-		i.customers[customerID] = struct{}{}
-		return nil
-	}
-	if err != nil {
-		return errors.Wrap(err, "failed to select good")
-	}
-
 	query := squirrel.Insert("customers").
 		SetMap(map[string]interface{}{
 			"id": customerID,
 		})
 
-	err = i.db.Exec(query)
+	err := i.db.Exec(query)
 	if err != nil {
 		return errors.Wrap(err, "failed to insert customer")
 	}
@@ -153,30 +187,12 @@ func (i *impl) upsertCustomer(customerID int) error {
 }
 
 func (i *impl) upsertGood(code string, price decimal.Decimal, description string) (id int, err error) {
-	newID, ok := i.goods[code]
+	g, ok := i.goods[code]
 	if ok {
-		return newID, nil
-	}
-
-	selectQuery := squirrel.Select("id").
-		From("goods").
-		Where(squirrel.Eq{"code": code})
-	var ids []struct{ ID int }
-	err = i.db.Select(&ids, selectQuery)
-	if err == nil && len(ids) != 0 {
-		newID = ids[0].ID
-		err = i.db.Exec(squirrel.Update("goods").
-			Where(squirrel.Eq{"id": newID}).
-			SetMap(map[string]interface{}{"price": price}),
-		)
-		if err != nil {
-			return 0, errors.Wrap(err, "failed to update good price")
-		}
-		i.goods[code] = newID
-		return newID, nil
-	}
-	if err != nil {
-		return 0, errors.Wrap(err, "failed to select good")
+		g.latestPrice = price
+		g.updated = true
+		i.goods[code] = g
+		return g.id, nil
 	}
 
 	insertQuery := squirrel.Insert("goods").
@@ -186,12 +202,15 @@ func (i *impl) upsertGood(code string, price decimal.Decimal, description string
 			"description": description,
 		}).Suffix("RETURNING id")
 
+	var ids []struct{ ID int }
 	err = i.db.Select(&ids, insertQuery)
 	if err != nil {
-		log.Println(description)
 		return 0, errors.Wrap(err, "failed to insert into goods")
 	}
-	newID = ids[0].ID
-	i.goods[code] = newID
-	return newID, nil
+	id = ids[0].ID
+	i.goods[code] = good{
+		id:          id,
+		latestPrice: price,
+	}
+	return
 }
