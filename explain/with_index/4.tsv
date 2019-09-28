@@ -1,0 +1,9 @@
+Bitmap Heap Scan on goods  (cost=5.97..137.43 rows=1 width=32) (actual time=0.103..2.699 rows=2 loops=1)
+  Recheck Cond: ((price >= '10'::numeric) AND (price <= '30'::numeric))
+  Filter: (to_tsvector(description) @@ to_tsquery('tea'::text))
+  Rows Removed by Filter: 166
+  Heap Blocks: exact=42
+  ->  Bitmap Index Scan on goods_price_idx  (cost=0.00..5.97 rows=169 width=0) (actual time=0.039..0.039 rows=168 loops=1)
+        Index Cond: ((price >= '10'::numeric) AND (price <= '30'::numeric))
+Planning Time: 0.162 ms
+Execution Time: 2.727 ms

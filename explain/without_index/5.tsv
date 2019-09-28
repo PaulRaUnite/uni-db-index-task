@@ -1,0 +1,25 @@
+Sort  (cost=9904.54..9904.64 rows=40 width=54) (actual time=403.486..403.490 rows=36 loops=1)
+  Sort Key: (count(*)) DESC
+  Sort Method: quicksort  Memory: 27kB
+  ->  Finalize GroupAggregate  (cost=9872.73..9903.48 rows=40 width=54) (actual time=187.979..403.436 rows=36 loops=1)
+        Group Key: invoices.destination_country
+        ->  Gather Merge  (cost=9872.73..9902.18 rows=80 width=54) (actual time=187.713..403.232 rows=93 loops=1)
+              Workers Planned: 2
+              Workers Launched: 2
+              ->  Partial GroupAggregate  (cost=8872.71..8892.92 rows=40 width=54) (actual time=181.308..291.611 rows=31 loops=3)
+                    Group Key: invoices.destination_country
+                    ->  Sort  (cost=8872.71..8876.00 rows=1314 width=24) (actual time=180.783..208.484 rows=68196 loops=3)
+                          Sort Key: invoices.destination_country
+                          Sort Method: external merge  Disk: 2384kB
+                          Worker 0:  Sort Method: external merge  Disk: 2464kB
+                          Worker 1:  Sort Method: external merge  Disk: 2432kB
+                          ->  Hash Join  (cost=855.31..8804.65 rows=1314 width=24) (actual time=79.256..131.023 rows=68196 loops=3)
+                                Hash Cond: (ip.invoice_id = invoices.id)
+                                ->  Parallel Seq Scan on invoice_parts ip  (cost=0.00..7259.93 rows=262593 width=18) (actual time=0.014..38.108 rows=210034 loops=3)
+                                ->  Hash  (cost=853.42..853.42 rows=151 width=22) (actual time=19.949..19.949 rows=10320 loops=3)
+                                      Buckets: 16384 (originally 1024)  Batches: 1 (originally 1)  Memory Usage: 686kB
+                                      ->  Seq Scan on invoices  (cost=0.00..853.42 rows=151 width=22) (actual time=8.041..15.780 rows=10320 loops=3)
+                                            Filter: ((date(invoice_date) >= '2011-01-01'::date) AND (date(invoice_date) <= '2012-01-01'::date))
+                                            Rows Removed by Filter: 19806
+Planning Time: 0.455 ms
+Execution Time: 404.599 ms

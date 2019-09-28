@@ -1,0 +1,11 @@
+Aggregate  (cost=1638.26..1638.27 rows=1 width=32) (actual time=21.660..21.660 rows=1 loops=1)
+  ->  Nested Loop  (cost=6.26..1614.57 rows=3158 width=10) (actual time=0.150..11.195 rows=22212 loops=1)
+        ->  Bitmap Heap Scan on invoices i  (cost=5.84..235.81 rows=151 width=8) (actual time=0.117..0.305 rows=1045 loops=1)
+              Recheck Cond: ((date(invoice_date) >= '2011-01-01'::date) AND (date(invoice_date) <= '2011-02-01'::date))
+              Heap Blocks: exact=10
+              ->  Bitmap Index Scan on invoice_date_date_idx  (cost=0.00..5.80 rows=151 width=0) (actual time=0.110..0.110 rows=1045 loops=1)
+                    Index Cond: ((date(invoice_date) >= '2011-01-01'::date) AND (date(invoice_date) <= '2011-02-01'::date))
+        ->  Index Scan using invoice_parts_invoice_id_idx on invoice_parts ip  (cost=0.42..8.80 rows=33 width=18) (actual time=0.002..0.006 rows=21 loops=1045)
+              Index Cond: (invoice_id = i.id)
+Planning Time: 0.471 ms
+Execution Time: 21.700 ms

@@ -10,7 +10,7 @@ select sum(unit_price * quantity)
 from invoice_parts
 where invoice_id = 536385;
 
--- 2. Month income (for bills)
+-- 2. Month income (for bills or statistics)
 explain analyse
 select sum(unit_price * quantity)
 from invoice_parts ip
@@ -41,17 +41,7 @@ where date(invoice_date) between '2011-01-01' and '2012-01-01'
 group by destination_country
 order by count(*) desc;
 
--- 6. Goods chart by average income (statistics)
-explain analyse
-select g.id, description, sum(ip.quantity * ip.unit_price) / count(i.id) as average_income
-from goods g
-         join invoice_parts ip on g.id = ip.good_id
-         join invoices i on ip.invoice_id = i.id
-where date(i.invoice_date) between '2011-01-01' and '2012-01-01'
-group by g.id
-order by average_income desc;
-
--- 7. Goods sold quantities (to order more or to show recommendations)
+-- 6. Goods sold quantities (to order more or to show recommendations)
 explain analyse
 select g.id, description, sum(ip.quantity) as sold
 from goods g
@@ -61,10 +51,10 @@ where date(i.invoice_date) between '2011-01-01' and '2011-04-01'
 group by g.id
 order by sold desc;
 
--- 8. "My orders"
+-- 7. "My orders"
 explain analyse
 select i.id, g.id, ip.quantity, g.description
 from invoices i
          join invoice_parts ip on i.id = ip.invoice_id
          join goods g on ip.good_id = g.id
-where customer_id = 15362;
+where i.customer_id = 15362;

@@ -1,0 +1,9 @@
+Bitmap Heap Scan on goods  (cost=5.97..52.93 rows=7 width=32) (actual time=0.055..0.164 rows=3 loops=1)
+  Recheck Cond: ((price >= '10'::numeric) AND (price <= '30'::numeric))
+  Filter: (description ~~ '%TEA%'::text)
+  Rows Removed by Filter: 165
+  Heap Blocks: exact=42
+  ->  Bitmap Index Scan on goods_price_idx  (cost=0.00..5.97 rows=169 width=0) (actual time=0.038..0.038 rows=168 loops=1)
+        Index Cond: ((price >= '10'::numeric) AND (price <= '30'::numeric))
+Planning Time: 0.261 ms
+Execution Time: 0.183 ms

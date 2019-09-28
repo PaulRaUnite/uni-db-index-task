@@ -1,0 +1,18 @@
+Finalize Aggregate  (cost=8916.74..8916.75 rows=1 width=32) (actual time=35.522..35.523 rows=1 loops=1)
+  Output: sum((unit_price * (quantity)::numeric))
+  ->  Gather  (cost=8916.52..8916.73 rows=2 width=32) (actual time=35.451..38.177 rows=3 loops=1)
+        Output: (PARTIAL sum((unit_price * (quantity)::numeric)))
+        Workers Planned: 2
+        Workers Launched: 2
+        ->  Partial Aggregate  (cost=7916.52..7916.53 rows=1 width=32) (actual time=24.707..24.708 rows=1 loops=3)
+              Output: PARTIAL sum((unit_price * (quantity)::numeric))
+              Worker 0: actual time=19.531..19.531 rows=1 loops=1
+              Worker 1: actual time=19.423..19.423 rows=1 loops=1
+              ->  Parallel Seq Scan on public.invoice_parts  (cost=0.00..7916.42 rows=13 width=10) (actual time=16.427..24.691 rows=5 loops=3)
+                    Output: id, good_id, unit_price, quantity, invoice_id
+                    Filter: (invoice_parts.invoice_id = 536385)
+                    Rows Removed by Filter: 210029
+                    Worker 0: actual time=19.526..19.526 rows=0 loops=1
+                    Worker 1: actual time=7.245..19.397 rows=7 loops=1
+Planning Time: 0.561 ms
+Execution Time: 38.222 ms

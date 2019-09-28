@@ -1,0 +1,15 @@
+Finalize Aggregate  (cost=9814.73..9814.74 rows=1 width=32) (actual time=63.328..63.328 rows=1 loops=1)
+  ->  Gather  (cost=9814.51..9814.72 rows=2 width=32) (actual time=63.261..65.558 rows=3 loops=1)
+        Workers Planned: 2
+        Workers Launched: 2
+        ->  Partial Aggregate  (cost=8814.51..8814.52 rows=1 width=32) (actual time=59.702..59.702 rows=1 loops=3)
+              ->  Hash Join  (cost=855.31..8804.65 rows=1314 width=10) (actual time=43.326..56.844 rows=7404 loops=3)
+                    Hash Cond: (ip.invoice_id = i.id)
+                    ->  Parallel Seq Scan on invoice_parts ip  (cost=0.00..7259.93 rows=262593 width=18) (actual time=0.011..19.810 rows=210034 loops=3)
+                    ->  Hash  (cost=853.42..853.42 rows=151 width=8) (actual time=9.877..9.877 rows=1045 loops=3)
+                          Buckets: 2048 (originally 1024)  Batches: 1 (originally 1)  Memory Usage: 57kB
+                          ->  Seq Scan on invoices i  (cost=0.00..853.42 rows=151 width=8) (actual time=5.529..9.580 rows=1045 loops=3)
+                                Filter: ((date(invoice_date) >= '2011-01-01'::date) AND (date(invoice_date) <= '2011-02-01'::date))
+                                Rows Removed by Filter: 29081
+Planning Time: 0.437 ms
+Execution Time: 65.623 ms

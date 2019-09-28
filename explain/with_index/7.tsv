@@ -1,0 +1,13 @@
+Nested Loop  (cost=5.03..100.55 rows=105 width=44) (actual time=0.023..0.136 rows=40 loops=1)
+  ->  Nested Loop  (cost=4.75..69.01 rows=105 width=16) (actual time=0.018..0.044 rows=40 loops=1)
+        ->  Bitmap Heap Scan on invoices i  (cost=4.33..22.27 rows=5 width=8) (actual time=0.010..0.013 rows=2 loops=1)
+              Recheck Cond: (customer_id = 15362)
+              Heap Blocks: exact=2
+              ->  Bitmap Index Scan on invoice_customer_id_idx  (cost=0.00..4.32 rows=5 width=0) (actual time=0.007..0.007 rows=2 loops=1)
+                    Index Cond: (customer_id = 15362)
+        ->  Index Scan using invoice_parts_invoice_id_idx on invoice_parts ip  (cost=0.42..9.02 rows=33 width=16) (actual time=0.004..0.009 rows=20 loops=2)
+              Index Cond: (invoice_id = i.id)
+  ->  Index Scan using goods_pkey on goods g  (cost=0.28..0.30 rows=1 width=32) (actual time=0.002..0.002 rows=1 loops=40)
+        Index Cond: (id = ip.good_id)
+Planning Time: 0.350 ms
+Execution Time: 0.167 ms

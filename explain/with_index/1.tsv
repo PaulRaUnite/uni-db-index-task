@@ -1,0 +1,7 @@
+Aggregate  (cost=9.24..9.25 rows=1 width=32) (actual time=0.065..0.065 rows=1 loops=1)
+  Output: sum((unit_price * (quantity)::numeric))
+  ->  Index Scan using invoice_parts_invoice_id_idx on public.invoice_parts  (cost=0.42..9.00 rows=32 width=10) (actual time=0.044..0.048 rows=14 loops=1)
+        Output: id, good_id, unit_price, quantity, invoice_id
+        Index Cond: (invoice_parts.invoice_id = 536385)
+Planning Time: 0.208 ms
+Execution Time: 0.087 ms

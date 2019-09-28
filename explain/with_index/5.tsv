@@ -1,0 +1,15 @@
+Sort  (cost=1655.61..1655.71 rows=40 width=54) (actual time=217.981..217.982 rows=36 loops=1)
+  Sort Key: (count(*)) DESC
+  Sort Method: quicksort  Memory: 27kB
+  ->  HashAggregate  (cost=1654.04..1654.54 rows=40 width=54) (actual time=217.956..217.968 rows=36 loops=1)
+        Group Key: invoices.destination_country
+        ->  Nested Loop  (cost=6.26..1614.57 rows=3158 width=24) (actual time=0.798..92.102 rows=204587 loops=1)
+              ->  Bitmap Heap Scan on invoices  (cost=5.84..235.81 rows=151 width=22) (actual time=0.780..2.212 rows=10320 loops=1)
+                    Recheck Cond: ((date(invoice_date) >= '2011-01-01'::date) AND (date(invoice_date) <= '2012-01-01'::date))
+                    Heap Blocks: exact=87
+                    ->  Bitmap Index Scan on invoice_date_date_idx  (cost=0.00..5.80 rows=151 width=0) (actual time=0.762..0.762 rows=10320 loops=1)
+                          Index Cond: ((date(invoice_date) >= '2011-01-01'::date) AND (date(invoice_date) <= '2012-01-01'::date))
+              ->  Index Scan using invoice_parts_invoice_id_idx on invoice_parts ip  (cost=0.42..8.80 rows=33 width=18) (actual time=0.002..0.005 rows=20 loops=10320)
+                    Index Cond: (invoice_id = invoices.id)
+Planning Time: 0.234 ms
+Execution Time: 218.032 ms

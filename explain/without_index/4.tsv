@@ -1,0 +1,5 @@
+Seq Scan on goods  (cost=0.00..2303.40 rows=1 width=32) (actual time=0.068..3.420 rows=2 loops=1)
+  Filter: ((price >= '10'::numeric) AND (price <= '30'::numeric) AND (to_tsvector(description) @@ to_tsquery('tea'::text)))
+  Rows Removed by Filter: 4364
+Planning Time: 0.124 ms
+Execution Time: 3.437 ms

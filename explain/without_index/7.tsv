@@ -1,0 +1,16 @@
+Gather  (cost=1627.48..9599.86 rows=104 width=44) (actual time=4.973..58.284 rows=40 loops=1)
+  Workers Planned: 2
+  Workers Launched: 2
+  ->  Nested Loop  (cost=627.48..8589.46 rows=43 width=44) (actual time=27.388..52.747 rows=13 loops=3)
+        ->  Hash Join  (cost=627.20..8576.54 rows=43 width=16) (actual time=27.372..52.696 rows=13 loops=3)
+              Hash Cond: (ip.invoice_id = i.id)
+              ->  Parallel Seq Scan on invoice_parts ip  (cost=0.00..7259.93 rows=262593 width=16) (actual time=0.009..21.109 rows=210034 loops=3)
+              ->  Hash  (cost=627.14..627.14 rows=5 width=8) (actual time=4.498..4.498 rows=2 loops=3)
+                    Buckets: 1024  Batches: 1  Memory Usage: 9kB
+                    ->  Seq Scan on invoices i  (cost=0.00..627.14 rows=5 width=8) (actual time=0.016..4.489 rows=2 loops=3)
+                          Filter: (customer_id = 15362)
+                          Rows Removed by Filter: 30124
+        ->  Index Scan using goods_pkey on goods g  (cost=0.28..0.30 rows=1 width=32) (actual time=0.003..0.003 rows=1 loops=40)
+              Index Cond: (id = ip.good_id)
+Planning Time: 0.304 ms
+Execution Time: 58.321 ms

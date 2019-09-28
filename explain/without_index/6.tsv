@@ -1,0 +1,30 @@
+Sort  (cost=10572.72..10580.61 rows=3154 width=40) (actual time=194.010..194.363 rows=2587 loops=1)
+  Sort Key: (sum(ip.quantity)) DESC
+  Sort Method: quicksort  Memory: 299kB
+  ->  Finalize GroupAggregate  (cost=10018.42..10389.43 rows=3154 width=40) (actual time=175.591..192.799 rows=2587 loops=1)
+        Group Key: g.id
+        ->  Gather Merge  (cost=10018.42..10344.75 rows=2628 width=40) (actual time=175.569..190.832 rows=6546 loops=1)
+              Workers Planned: 2
+              Workers Launched: 2
+              ->  Partial GroupAggregate  (cost=9018.40..9041.39 rows=1314 width=40) (actual time=168.853..181.154 rows=2182 loops=3)
+                    Group Key: g.id
+                    ->  Sort  (cost=9018.40..9021.68 rows=1314 width=36) (actual time=168.841..172.456 rows=22908 loops=3)
+                          Sort Key: g.id
+                          Sort Method: quicksort  Memory: 2286kB
+                          Worker 0:  Sort Method: quicksort  Memory: 2277kB
+                          Worker 1:  Sort Method: quicksort  Memory: 3103kB
+                          ->  Hash Join  (cost=997.54..8950.33 rows=1314 width=36) (actual time=100.157..155.094 rows=22908 loops=3)
+                                Hash Cond: (ip.good_id = g.id)
+                                ->  Hash Join  (cost=855.31..8804.65 rows=1314 width=8) (actual time=95.411..134.150 rows=22908 loops=3)
+                                      Hash Cond: (ip.invoice_id = i.id)
+                                      ->  Parallel Seq Scan on invoice_parts ip  (cost=0.00..7259.93 rows=262593 width=16) (actual time=0.011..44.288 rows=210034 loops=3)
+                                      ->  Hash  (cost=853.42..853.42 rows=151 width=8) (actual time=17.613..17.614 rows=3373 loops=3)
+                                            Buckets: 4096 (originally 1024)  Batches: 1 (originally 1)  Memory Usage: 164kB
+                                            ->  Seq Scan on invoices i  (cost=0.00..853.42 rows=151 width=8) (actual time=8.835..16.111 rows=3373 loops=3)
+                                                  Filter: ((date(invoice_date) >= '2011-01-01'::date) AND (date(invoice_date) <= '2011-04-01'::date))
+                                                  Rows Removed by Filter: 26753
+                                ->  Hash  (cost=87.66..87.66 rows=4366 width=32) (actual time=4.645..4.645 rows=4366 loops=3)
+                                      Buckets: 8192  Batches: 1  Memory Usage: 338kB
+                                      ->  Seq Scan on goods g  (cost=0.00..87.66 rows=4366 width=32) (actual time=0.036..2.082 rows=4366 loops=3)
+Planning Time: 0.704 ms
+Execution Time: 196.465 ms

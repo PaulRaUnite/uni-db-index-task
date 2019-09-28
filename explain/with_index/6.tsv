@@ -1,0 +1,20 @@
+Sort  (cost=1996.03..2003.92 rows=3158 width=40) (actual time=78.726..78.871 rows=2587 loops=1)
+  Sort Key: (sum(ip.quantity)) DESC
+  Sort Method: quicksort  Memory: 299kB
+  ->  HashAggregate  (cost=1780.89..1812.47 rows=3158 width=40) (actual time=77.776..78.200 rows=2587 loops=1)
+        Group Key: g.id
+        ->  Hash Join  (cost=148.50..1765.10 rows=3158 width=36) (actual time=3.420..59.499 rows=68724 loops=1)
+              Hash Cond: (ip.good_id = g.id)
+              ->  Nested Loop  (cost=6.26..1614.57 rows=3158 width=8) (actual time=0.398..34.169 rows=68724 loops=1)
+                    ->  Bitmap Heap Scan on invoices i  (cost=5.84..235.81 rows=151 width=8) (actual time=0.379..0.975 rows=3373 loops=1)
+                          Recheck Cond: ((date(invoice_date) >= '2011-01-01'::date) AND (date(invoice_date) <= '2011-04-01'::date))
+                          Heap Blocks: exact=29
+                          ->  Bitmap Index Scan on invoice_date_date_idx  (cost=0.00..5.80 rows=151 width=0) (actual time=0.365..0.365 rows=3373 loops=1)
+                                Index Cond: ((date(invoice_date) >= '2011-01-01'::date) AND (date(invoice_date) <= '2011-04-01'::date))
+                    ->  Index Scan using invoice_parts_invoice_id_idx on invoice_parts ip  (cost=0.42..8.80 rows=33 width=16) (actual time=0.002..0.006 rows=20 loops=3373)
+                          Index Cond: (invoice_id = i.id)
+              ->  Hash  (cost=87.66..87.66 rows=4366 width=32) (actual time=2.788..2.788 rows=4366 loops=1)
+                    Buckets: 8192  Batches: 1  Memory Usage: 338kB
+                    ->  Seq Scan on goods g  (cost=0.00..87.66 rows=4366 width=32) (actual time=0.016..1.237 rows=4366 loops=1)
+Planning Time: 0.688 ms
+Execution Time: 79.260 ms

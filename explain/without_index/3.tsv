@@ -1,0 +1,5 @@
+Seq Scan on goods  (cost=0.00..120.41 rows=7 width=32) (actual time=0.089..2.314 rows=3 loops=1)
+  Filter: ((description ~~ '%TEA%'::text) AND (price >= '10'::numeric) AND (price <= '30'::numeric))
+  Rows Removed by Filter: 4363
+Planning Time: 0.358 ms
+Execution Time: 2.332 ms
