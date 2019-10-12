@@ -26,6 +26,7 @@ type impl struct {
 	customers map[int]struct{}
 	goods     map[string]good
 	invoices  map[int]struct{}
+	countries map[string]int
 }
 
 func Run(cfg config.Config, source io.Reader) error {
@@ -97,6 +98,18 @@ func (i *impl) preLoad() error {
 	for _, record := range goods {
 		i.goods[record.Code] = good{id: record.ID, latestPrice: record.Price}
 	}
+	var countries []struct {
+		ID           int    `db:"id"`
+		ReadableName string `db:"readable_name"`
+	}
+	err = i.db.Select(&countries, squirrel.Select("*").From("countries"))
+	if err != nil {
+		return err
+	}
+	i.countries = make(map[string]int, 2*len(countries))
+	for _, record := range countries {
+		i.countries[record.ReadableName] = record.ID
+	}
 	return nil
 }
 
@@ -133,6 +146,25 @@ func (i *impl) upsertInvoicePart(record data.Record) error {
 	return i.insertInvoicePart(goodID, record)
 }
 
+func (i *impl) upsertCountry(country string) (int, error) {
+	if id, ok := i.countries[country]; ok {
+		return id, nil
+	}
+
+	insertQuery := squirrel.Insert("countries").
+		SetMap(map[string]interface{}{
+			"readable_name": country,
+		}).Suffix("RETURNING id")
+
+	var id int
+	err := i.db.Get(&id, insertQuery)
+	if err != nil {
+		return 0, errors.Wrap(err, "failed to insert into countries")
+	}
+	i.countries[country] = id
+	return id, nil
+}
+
 func (i *impl) insertInvoicePart(goodID int, record data.Record) error {
 	query := squirrel.Insert("invoice_parts").
 		SetMap(map[string]interface{}{
@@ -152,15 +184,19 @@ func (i *impl) upsertInvoice(record data.Record) error {
 		return nil
 	}
 
+	countryID, err := i.upsertCountry(record.Country)
+	if err != nil {
+		return errors.Wrapf(err, "failed to upsert a country: %s", record.Country)
+	}
 	insertQuery := squirrel.Insert("invoices").
 		SetMap(map[string]interface{}{
-			"id":                  record.InvoiceNo,
-			"customer_id":         record.CustomerID,
-			"destination_country": record.Country,
-			"invoice_date":        record.InvoiceDate.Format(postgrestimestampFormat),
+			"id":                     record.InvoiceNo,
+			"customer_id":            record.CustomerID,
+			"destination_country_id": countryID,
+			"invoice_date":           record.InvoiceDate.Format(postgrestimestampFormat),
 		})
 
-	err := i.db.Exec(insertQuery)
+	err = i.db.Exec(insertQuery)
 	if err != nil {
 		return errors.Wrap(err, "failed to insert into invoices")
 	}
@@ -186,7 +222,7 @@ func (i *impl) upsertCustomer(customerID int) error {
 	return nil
 }
 
-func (i *impl) upsertGood(code string, price decimal.Decimal, description string) (id int, err error) {
+func (i *impl) upsertGood(code string, price decimal.Decimal, description string) (int, error) {
 	g, ok := i.goods[code]
 	if ok {
 		g.latestPrice = price
@@ -202,15 +238,14 @@ func (i *impl) upsertGood(code string, price decimal.Decimal, description string
 			"description": description,
 		}).Suffix("RETURNING id")
 
-	var ids []struct{ ID int }
-	err = i.db.Select(&ids, insertQuery)
+	var id int
+	err := i.db.Get(&id, insertQuery)
 	if err != nil {
 		return 0, errors.Wrap(err, "failed to insert into goods")
 	}
-	id = ids[0].ID
 	i.goods[code] = good{
 		id:          id,
 		latestPrice: price,
 	}
-	return
+	return id, nil
 }

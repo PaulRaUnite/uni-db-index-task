@@ -1,9 +1,11 @@
-Bitmap Heap Scan on goods  (cost=5.97..52.93 rows=7 width=32) (actual time=0.055..0.164 rows=3 loops=1)
-  Recheck Cond: ((price >= '10'::numeric) AND (price <= '30'::numeric))
-  Filter: (description ~~ '%TEA%'::text)
-  Rows Removed by Filter: 165
-  Heap Blocks: exact=42
-  ->  Bitmap Index Scan on goods_price_idx  (cost=0.00..5.97 rows=169 width=0) (actual time=0.038..0.038 rows=168 loops=1)
-        Index Cond: ((price >= '10'::numeric) AND (price <= '30'::numeric))
-Planning Time: 0.261 ms
-Execution Time: 0.183 ms
+QUERY PLAN
+Bitmap Heap Scan on goods  (cost=23.68..43.42 rows=7 width=32) (actual time=0.806..0.841 rows=3 loops=1)
+  Recheck Cond: ((price >= '10'::numeric) AND (price <= '30'::numeric) AND (description ~~ '%TEA%'::text))
+  Heap Blocks: exact=3
+  ->  BitmapAnd  (cost=23.68..23.68 rows=7 width=0) (actual time=0.777..0.778 rows=0 loops=1)
+        ->  Bitmap Index Scan on goods_price_idx  (cost=0.00..5.97 rows=169 width=0) (actual time=0.032..0.032 rows=168 loops=1)
+              Index Cond: ((price >= '10'::numeric) AND (price <= '30'::numeric))
+        ->  Bitmap Index Scan on goods_descr_trigram_idx  (cost=0.00..17.45 rows=174 width=0) (actual time=0.741..0.741 rows=98 loops=1)
+              Index Cond: (description ~~ '%TEA%'::text)
+Planning Time: 0.532 ms
+Execution Time: 0.869 ms

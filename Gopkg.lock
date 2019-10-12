@@ -258,7 +258,7 @@
   version = "v2.1.0"
 
 [[projects]]
-  digest = "1:94d87b7ab93101956719df63eb0e0fd838dd28d58c4fd9a3106ed0714bb885b3"
+  digest = "1:744d4a563d16d3326f5a198321457c8cf9710f6b4e2cb519924e0ac16afb321e"
   name = "gitlab.com/distributed_lab/kit"
   packages = [
     "comfig",
@@ -266,8 +266,8 @@
     "pgdb",
   ]
   pruneopts = "UT"
-  revision = "68fa3af41ebb45da48be9db7739f68b9cc429930"
-  version = "v1.1.0"
+  revision = "1d5ac14ac1bd81533991f4c0e4e8888feac994c8"
+  version = "v1.2.0"
 
 [[projects]]
   digest = "1:5c74250e2fc48f2fc18808f58640b9b030a76e6eca083486a227441f0803be19"
@@ -326,7 +326,6 @@
     "gitlab.com/distributed_lab/kit/comfig",
     "gitlab.com/distributed_lab/kit/kv",
     "gitlab.com/distributed_lab/kit/pgdb",
-    "gitlab.com/distributed_lab/logan/v3/errors",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1

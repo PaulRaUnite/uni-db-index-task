@@ -43,7 +43,7 @@
 
 [[constraint]]
   name = "gitlab.com/distributed_lab/kit"
-  version = "1.1.0"
+  version = "1.2.0"
 
 [prune]
   go-tests = true

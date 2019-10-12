@@ -5,6 +5,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"runtime/pprof"
 
 	"github.com/PaulRaUnite/uni-db-index-task/internal/service/validator"
 
@@ -22,6 +23,7 @@ import (
 
 func main() {
 	app := kingpin.New("db-index-task", "")
+	cpuprofile := app.Flag("cpu-profile", "write cpu profile to `file`").String()
 	topCmd := app.Command("top", "")
 
 	limitArg := topCmd.Arg("limit", "").Required().Int()
@@ -40,6 +42,17 @@ func main() {
 	cmd, err := app.Parse(os.Args[1:])
 	if err != nil {
 		log.Fatalln(err)
+	}
+	if cpuprofile != nil {
+		f, err := os.Create(*cpuprofile)
+		if err != nil {
+			log.Fatal("could not create CPU profile: ", err)
+		}
+		defer f.Close()
+		if err := pprof.StartCPUProfile(f); err != nil {
+			log.Fatal("could not start CPU profile: ", err)
+		}
+		defer pprof.StopCPUProfile()
 	}
 
 	switch cmd {

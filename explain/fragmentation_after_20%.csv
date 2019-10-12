@@ -1,0 +1,5 @@
+name,version,tree_level,index_size,root_block_no,internal_pages,leaf_pages,empty_pages,deleted_pages,avg_leaf_density,leaf_fragmentation
+invoice_customer_id_idx,3,1,1368064,3,1,165,0,0,55.21,49.7
+goods_price_idx,3,1,180224,3,1,20,0,0,56.11,40
+invoice_date_date_idx,3,1,851968,3,1,102,0,0,89.13,0.98
+invoice_parts_invoice_id_idx,3,2,17915904,290,9,2177,0,0,89.83,0.78

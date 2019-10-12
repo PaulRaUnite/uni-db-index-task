@@ -29,16 +29,17 @@ where description like '%TEA%'
 explain analyse
 select id, description
 from goods
-where to_tsvector(description) @@ to_tsquery('tea')
+where to_tsvector('english', description) @@ to_tsquery('tea')
   and price between 10 and 30;
 
 -- 5. Country chart by invoice count (statistics)
 explain analyse
-select destination_country, count(*), sum(ip.unit_price * ip.quantity)
+select c.readable_name, count(*), sum(ip.unit_price * ip.quantity)
 from invoices
          join invoice_parts ip on invoices.id = ip.invoice_id
+         join countries c on invoices.destination_country_id = c.id
 where date(invoice_date) between '2011-01-01' and '2012-01-01'
-group by destination_country
+group by c.readable_name
 order by count(*) desc;
 
 -- 6. Goods sold quantities (to order more or to show recommendations)
