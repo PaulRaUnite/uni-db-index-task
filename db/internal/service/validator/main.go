@@ -6,9 +6,10 @@ import (
 	"log"
 	"strconv"
 
+	data2 "github.com/PaulRaUnite/uni-db-index-task/db/internal/data"
+
 	"github.com/pkg/errors"
 
-	"github.com/PaulRaUnite/uni-db-index-task/internal/data"
 	validation "github.com/go-ozzo/ozzo-validation"
 	"github.com/gocarina/gocsv"
 )
@@ -16,7 +17,7 @@ import (
 func Run(source io.Reader) error {
 	errs := validation.Errors{}
 
-	unm, err := gocsv.NewUnmarshaller(csv.NewReader(source), data.Record{})
+	unm, err := gocsv.NewUnmarshaller(csv.NewReader(source), data2.Record{})
 	if err != nil {
 		log.Fatalln(err)
 	}

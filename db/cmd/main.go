@@ -7,15 +7,15 @@ import (
 	"os"
 	"runtime/pprof"
 
-	"github.com/PaulRaUnite/uni-db-index-task/internal/service/validator"
+	"github.com/PaulRaUnite/uni-db-index-task/db/internal/service/validator"
 
-	"github.com/PaulRaUnite/uni-db-index-task/internal/config"
+	"github.com/PaulRaUnite/uni-db-index-task/db/internal/config"
 	"gitlab.com/distributed_lab/kit/kv"
 
-	"github.com/PaulRaUnite/uni-db-index-task/internal/service/loader"
+	"github.com/PaulRaUnite/uni-db-index-task/db/internal/service/loader"
 
-	"github.com/PaulRaUnite/uni-db-index-task/internal/service/splitter"
-	"github.com/PaulRaUnite/uni-db-index-task/internal/service/topper"
+	"github.com/PaulRaUnite/uni-db-index-task/db/internal/service/splitter"
+	"github.com/PaulRaUnite/uni-db-index-task/db/internal/service/topper"
 
 	"github.com/alecthomas/kingpin"
 	"github.com/pkg/errors"

@@ -4,13 +4,14 @@ import (
 	"encoding/csv"
 	"io"
 
+	config2 "github.com/PaulRaUnite/uni-db-index-task/db/internal/config"
+	data2 "github.com/PaulRaUnite/uni-db-index-task/db/internal/data"
+
 	"github.com/shopspring/decimal"
 
 	"github.com/Masterminds/squirrel"
-	"github.com/PaulRaUnite/uni-db-index-task/internal/config"
 	"gitlab.com/distributed_lab/kit/pgdb"
 
-	"github.com/PaulRaUnite/uni-db-index-task/internal/data"
 	"github.com/gocarina/gocsv"
 	"github.com/pkg/errors"
 )
@@ -29,8 +30,8 @@ type impl struct {
 	countries map[string]int
 }
 
-func Run(cfg config.Config, source io.Reader) error {
-	unm, err := gocsv.NewUnmarshaller(csv.NewReader(source), data.Record{})
+func Run(cfg config2.Config, source io.Reader) error {
+	unm, err := gocsv.NewUnmarshaller(csv.NewReader(source), data2.Record{})
 	if err != nil {
 		return errors.Wrap(err, "failed to create unmarshaller")
 	}
@@ -58,7 +59,7 @@ func (i *impl) runOnce() error {
 		if err != nil {
 			return errors.Wrap(err, "failed to unmarshal record")
 		}
-		err = i.upsertInvoicePart(record.(data.Record))
+		err = i.upsertInvoicePart(record.(data2.Record))
 		if err != nil {
 			return errors.Wrapf(err, "failed to save record in database: %v", record)
 		}
@@ -129,7 +130,7 @@ func (i *impl) dumpPrices() error {
 	return nil
 }
 
-func (i *impl) upsertInvoicePart(record data.Record) error {
+func (i *impl) upsertInvoicePart(record data2.Record) error {
 	err := i.upsertCustomer(record.CustomerID)
 	if err != nil {
 		return err
@@ -165,7 +166,7 @@ func (i *impl) upsertCountry(country string) (int, error) {
 	return id, nil
 }
 
-func (i *impl) insertInvoicePart(goodID int, record data.Record) error {
+func (i *impl) insertInvoicePart(goodID int, record data2.Record) error {
 	query := squirrel.Insert("invoice_parts").
 		SetMap(map[string]interface{}{
 			"good_id":    goodID,
@@ -179,7 +180,7 @@ func (i *impl) insertInvoicePart(goodID int, record data.Record) error {
 
 const postgrestimestampFormat = "2006-01-02 15:04:05-07"
 
-func (i *impl) upsertInvoice(record data.Record) error {
+func (i *impl) upsertInvoice(record data2.Record) error {
 	if _, ok := i.invoices[record.InvoiceNo]; ok {
 		return nil
 	}
