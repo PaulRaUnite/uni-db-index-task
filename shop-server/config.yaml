@@ -1,0 +1,9 @@
+db:
+  url: postgres://postgres@localhost/shop?sslmode=disable&client_encoding=utf8
+
+listener:
+  addr: :80
+
+log:
+  level: debug
+  disable_sentry: true
