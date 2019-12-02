@@ -8,12 +8,16 @@ import (
 	"syscall"
 
 	"github.com/alecthomas/kingpin"
+	migrate "github.com/rubenv/sql-migrate"
 	"gitlab.com/distributed_lab/kit/kv"
 	"gitlab.com/distributed_lab/logan/v3"
 
-	"github.com/PaulRaUnite/uni-db-index-task/shop-server/internal/api"
+	"github.com/PaulRaUnite/uni-db-index-task/shop-server/internal/assets"
 	"github.com/PaulRaUnite/uni-db-index-task/shop-server/internal/config"
+	"github.com/PaulRaUnite/uni-db-index-task/shop-server/internal/service/api"
 )
+
+var migrations = &migrate.PackrMigrationSource{Box: assets.SchemaMigrations}
 
 func main() {
 	defer func() {
@@ -37,9 +41,10 @@ func main() {
 	switch cmd {
 	case runCmd.FullCommand():
 		ctx, cancel := context.WithCancel(context.Background())
-		graceful := make(chan os.Signal, 2)
+		graceful := make(chan os.Signal, 3)
 		signal.Notify(graceful, syscall.SIGTERM)
 		signal.Notify(graceful, syscall.SIGINT)
+		signal.Notify(graceful, syscall.SIGKILL)
 
 		routines := []func(context.Context, config.Config){
 			api.Run,
@@ -57,25 +62,24 @@ func main() {
 		<-graceful
 		cancel()
 		wg.Wait()
-
 	case migrateDownCmd.FullCommand():
-		//applied, err := migrate.Exec(cfg.Storage().DB().RawDB(), "postgres", migrations, migrate.Down)
-		//if err != nil {
-		//	cfg.Log().WithError(err).Fatal("failed to apply migrations")
-		//}
-		//cfg.Log().WithFields(logan.F{
-		//	"direction": "down",
-		//	"applied":   applied,
-		//}).Info("migrations applied")
+		applied, err := migrate.Exec(cfg.ClonedStorage().DB().RawDB(), "postgres", migrations, migrate.Down)
+		if err != nil {
+			cfg.Log().WithError(err).Fatal("failed to apply migrations")
+		}
+		cfg.Log().WithFields(logan.F{
+			"direction": "down",
+			"applied":   applied,
+		}).Info("migrations applied")
 	case migrateUpCmd.FullCommand():
-		//applied, err := migrate.Exec(cfg.Storage().DB().RawDB(), "postgres", migrations, migrate.Up)
-		//if err != nil {
-		//	cfg.Log().WithError(err).Fatal("failed to apply migrations")
-		//}
-		//cfg.Log().WithFields(logan.F{
-		//	"direction": "up",
-		//	"applied":   applied,
-		//}).Info("migrations applied")
+		applied, err := migrate.Exec(cfg.ClonedStorage().DB().RawDB(), "postgres", migrations, migrate.Up)
+		if err != nil {
+			cfg.Log().WithError(err).Fatal("failed to apply migrations")
+		}
+		cfg.Log().WithFields(logan.F{
+			"direction": "up",
+			"applied":   applied,
+		}).Info("migrations applied")
 	}
 
 }
