@@ -14,11 +14,17 @@ var _ = func() error {
 	const gk = "ca055a9e995be185a445b2395d32c380"
 	g := packr.New(gk, "")
 	hgr, err := resolver.NewHexGzip(map[string]string{
+		"7e42fa8ce2b2281fe45f247698df476a": "1f8b08000000000000ff8c534f4fc23014bff753bc234439e8c984d3848a8ddbc4b219392d736d48136967d769f8f6667f0aeb28c47722e5f7defbfd799bcde0662f763a371cd212a142f3e6a7c93fbf38147565d49eeb0a4d10008060b0c1940421ac298902ba8517bc45d3f9b84dd5d268c1076d833a9f70dba234cf59d39ec97ccf21c11f09c4af09c46918421a93b7149f6fda29c57c5b2eed2814e316f31ed0c573402777f70fd3f1a60ecd785568511aa164c7c7964577b0528bc24e5de2058982d0859df316f24789e28241c77a24ab8b42fa6432b795c4095e610a143f618ae305de9c32848960d31175c62b2364de28ccbad40ecd44df189ba96f4c2f27638dc2532524c29b2488d65e75ff72282b736d3c365db1a6b989de161227430dedb574fc7d39d65298ac0bd389f10aefaef1bbcea511e6d06fbc567edf046b048dd8da1b710d6f9d1a7eb44bf52b11625a953ee7e69e7fdcc7d614e7e518b5fb6aef688efe020000ffff2ee2384834040000",
 	})
 	if err != nil {
 		panic(err)
 	}
 	g.DefaultResolver = hgr
+
+	func() {
+		b := packr.New("migrations", "./migrations")
+		b.SetResolver("001_schema_init.sql", packr.Pointer{ForwardBox: gk, ForwardPath: "7e42fa8ce2b2281fe45f247698df476a"})
+		}()
 
 	return nil
 }()

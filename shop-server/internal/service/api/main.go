@@ -18,6 +18,10 @@ func Run(ctx context.Context, config config.Config) {
 	log := config.Log().WithField("service", "api")
 	ape.DefaultMiddlewares(r, log, time.Second)
 
+	r.Use(ape.CtxMiddleware(func(ctx context.Context) context.Context {
+		return context.WithValue(ctx, "config", config)
+	}))
+
 	r.Get("/health", func(writer http.ResponseWriter, r *http.Request) {})
 	r.Get("/inventory/goods", inventory.GetGoods)
 	r.Get("/inventory/goods/{id}", inventory.GetSingleGood)

@@ -9,9 +9,11 @@ type Storage interface {
 	Clone() Storage
 	DB() *pgdb.DB
 	Transaction(tx func() error) error
+	GoodQ() GoodQ
 }
 
 type GoodQ interface {
+	GoodByID(id int) (*Good, error)
 }
 
 type CountryQ interface {
