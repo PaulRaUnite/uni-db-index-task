@@ -7,3 +7,6 @@ listener:
 log:
   level: debug
   disable_sentry: true
+
+mongo:
+  url: mongodb://trash-db:27017

@@ -5,10 +5,12 @@ github.com/alecthomas/kingpin
 # github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751
 github.com/alecthomas/template
 github.com/alecthomas/template/parse
-# github.com/alecthomas/units v0.0.0-20190910110746-680d30ca3117
+# github.com/alecthomas/units v0.0.0-20190924025748-f65c72e2690d
 github.com/alecthomas/units
-# github.com/certifi/gocertifi v0.0.0-20180118203423-deb3ae2ef261
+# github.com/certifi/gocertifi v0.0.0-20191021191039-0944d244cd40
 github.com/certifi/gocertifi
+# github.com/dgrijalva/jwt-go v3.2.0+incompatible
+github.com/dgrijalva/jwt-go
 # github.com/evalphobia/logrus_sentry v0.8.2
 github.com/evalphobia/logrus_sentry
 # github.com/fsnotify/fsnotify v1.4.7
@@ -22,6 +24,8 @@ github.com/go-chi/chi
 github.com/go-chi/chi/middleware
 # github.com/go-ozzo/ozzo-validation v3.6.0+incompatible
 github.com/go-ozzo/ozzo-validation
+# github.com/go-stack/stack v1.8.0
+github.com/go-stack/stack
 # github.com/gobuffalo/envy v1.8.1
 github.com/gobuffalo/envy
 # github.com/gobuffalo/logger v1.0.3
@@ -40,9 +44,11 @@ github.com/gobuffalo/packr/v2/internal/takeon/github.com/markbates/oncer
 github.com/gobuffalo/packr/v2/internal/takeon/github.com/markbates/safe
 github.com/gobuffalo/packr/v2/jam/parser
 github.com/gobuffalo/packr/v2/plog
-# github.com/gocarina/gocsv v0.0.0-20191122093448-c6a9c812ac26
+# github.com/gocarina/gocsv v0.0.0-20191206133602-e709afbdb199
 github.com/gocarina/gocsv
-# github.com/google/jsonapi v0.0.0-20170708005851-46d3ced04344
+# github.com/golang/snappy v0.0.1
+github.com/golang/snappy
+# github.com/google/jsonapi v0.0.0-20181016150055-d0428f63eb51
 github.com/google/jsonapi
 # github.com/hashicorp/hcl v1.0.0
 github.com/hashicorp/hcl
@@ -74,7 +80,7 @@ github.com/lib/pq/scram
 github.com/magiconair/properties
 # github.com/mitchellh/mapstructure v1.1.2
 github.com/mitchellh/mapstructure
-# github.com/pelletier/go-toml v1.4.0
+# github.com/pelletier/go-toml v1.6.0
 github.com/pelletier/go-toml
 # github.com/pkg/errors v0.8.1
 github.com/pkg/errors
@@ -85,7 +91,7 @@ github.com/rogpeppe/go-internal/semver
 # github.com/rubenv/sql-migrate v0.0.0-20191121092708-da1cb182f00e
 github.com/rubenv/sql-migrate
 github.com/rubenv/sql-migrate/sqlparse
-# github.com/shopspring/decimal v0.0.0-20180709203117-cd690d0c9e24
+# github.com/shopspring/decimal v0.0.0-20191130220710-360f2bc03045
 github.com/shopspring/decimal
 # github.com/sirupsen/logrus v1.4.2
 github.com/sirupsen/logrus
@@ -98,24 +104,62 @@ github.com/spf13/cast
 github.com/spf13/jwalterweatherman
 # github.com/spf13/pflag v1.0.5
 github.com/spf13/pflag
-# github.com/spf13/viper v1.4.0
+# github.com/spf13/viper v1.6.1
 github.com/spf13/viper
+# github.com/subosito/gotenv v1.2.0
+github.com/subosito/gotenv
+# github.com/xdg/scram v0.0.0-20180814205039-7eeb5667e42c
+github.com/xdg/scram
+# github.com/xdg/stringprep v1.0.0
+github.com/xdg/stringprep
 # gitlab.com/distributed_lab/ape v1.2.0
 gitlab.com/distributed_lab/ape
 gitlab.com/distributed_lab/ape/problems
 # gitlab.com/distributed_lab/figure v2.1.0+incompatible
 gitlab.com/distributed_lab/figure
-# gitlab.com/distributed_lab/kit v1.3.0
+# gitlab.com/distributed_lab/kit v1.4.0
 gitlab.com/distributed_lab/kit/comfig
 gitlab.com/distributed_lab/kit/kv
 gitlab.com/distributed_lab/kit/pgdb
-# gitlab.com/distributed_lab/logan v3.7.1+incompatible
+# gitlab.com/distributed_lab/logan v3.7.2+incompatible
 gitlab.com/distributed_lab/logan/v3
 gitlab.com/distributed_lab/logan/v3/errors
 gitlab.com/distributed_lab/logan/v3/fields
-# golang.org/x/crypto v0.0.0-20191202143827-86a70503ff7e
+# go.mongodb.org/mongo-driver v1.1.3
+go.mongodb.org/mongo-driver/bson
+go.mongodb.org/mongo-driver/bson/bsoncodec
+go.mongodb.org/mongo-driver/bson/bsonrw
+go.mongodb.org/mongo-driver/bson/bsontype
+go.mongodb.org/mongo-driver/bson/primitive
+go.mongodb.org/mongo-driver/event
+go.mongodb.org/mongo-driver/internal
+go.mongodb.org/mongo-driver/mongo
+go.mongodb.org/mongo-driver/mongo/options
+go.mongodb.org/mongo-driver/mongo/readconcern
+go.mongodb.org/mongo-driver/mongo/readpref
+go.mongodb.org/mongo-driver/mongo/writeconcern
+go.mongodb.org/mongo-driver/tag
+go.mongodb.org/mongo-driver/version
+go.mongodb.org/mongo-driver/x/bsonx
+go.mongodb.org/mongo-driver/x/bsonx/bsoncore
+go.mongodb.org/mongo-driver/x/mongo/driver
+go.mongodb.org/mongo-driver/x/mongo/driver/address
+go.mongodb.org/mongo-driver/x/mongo/driver/auth
+go.mongodb.org/mongo-driver/x/mongo/driver/auth/internal/gssapi
+go.mongodb.org/mongo-driver/x/mongo/driver/connstring
+go.mongodb.org/mongo-driver/x/mongo/driver/description
+go.mongodb.org/mongo-driver/x/mongo/driver/dns
+go.mongodb.org/mongo-driver/x/mongo/driver/operation
+go.mongodb.org/mongo-driver/x/mongo/driver/session
+go.mongodb.org/mongo-driver/x/mongo/driver/topology
+go.mongodb.org/mongo-driver/x/mongo/driver/uuid
+go.mongodb.org/mongo-driver/x/mongo/driver/wiremessage
+# golang.org/x/crypto v0.0.0-20191206172530-e9b2fee46413
+golang.org/x/crypto/pbkdf2
 golang.org/x/crypto/ssh/terminal
-# golang.org/x/sys v0.0.0-20190920190810-ef0ce1748380
+# golang.org/x/sync v0.0.0-20190911185100-cd5d95a43a6e
+golang.org/x/sync/semaphore
+# golang.org/x/sys v0.0.0-20191206220618-eeba5f6aabab
 golang.org/x/sys/unix
 golang.org/x/sys/windows
 # golang.org/x/text v0.3.2
@@ -123,5 +167,7 @@ golang.org/x/text/transform
 golang.org/x/text/unicode/norm
 # gopkg.in/gorp.v1 v1.7.2
 gopkg.in/gorp.v1
-# gopkg.in/yaml.v2 v2.2.5
+# gopkg.in/ini.v1 v1.51.0
+gopkg.in/ini.v1
+# gopkg.in/yaml.v2 v2.2.7
 gopkg.in/yaml.v2

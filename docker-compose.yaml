@@ -21,6 +21,10 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - inter-net
+    labels:
+      - "traefik.http.middlewares.testheader.headers.accesscontrolallowmethods=GET,OPTIONS,PUT"
+      - "traefik.http.middlewares.testheader.headers.accesscontrolalloworigin=*"
+      - "traefik.http.middlewares.testheader.headers.addvaryheader=true"
 
   shop-db:
     image: postgres:alpine
@@ -59,7 +63,21 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.server.rule=Host(`api.localhost`)"
       - "traefik.http.routers.server.entrypoints=web"
-      - "traefik.http.services.my-container-service.loadbalancer.server.port=80"
+      - "traefik.http.services.server-service.loadbalancer.server.port=80"
+
+  frontend:
+    image: node
+    working_dir: /client
+    command: npm run serve
+    networks:
+      - inter-net
+    volumes:
+    - ./client:/client
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.frontend.rule=Host(`localhost`)"
+      - "traefik.http.routers.frontend.entrypoints=web"
+      - "traefik.http.services.frontend-service.loadbalancer.server.port=8080"
 
 networks:
   inter-net:

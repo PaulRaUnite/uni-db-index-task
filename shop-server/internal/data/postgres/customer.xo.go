@@ -34,13 +34,13 @@ func (q CustomerQ) Insert(c *data.Customer) error {
 
 	// sql insert query, primary key provided by sequence
 	const sqlstr = `INSERT INTO public.customers (` +
-		`` +
+		`name` +
 		`) VALUES (` +
-		`` +
+		`$1` +
 		`) RETURNING id`
 
 	// run query
-	err = q.db.GetRaw(&c.ID, sqlstr)
+	err = q.db.GetRaw(&c.ID, sqlstr, c.Name)
 	if err != nil {
 		return err
 	}
@@ -48,7 +48,41 @@ func (q CustomerQ) Insert(c *data.Customer) error {
 	return nil
 }
 
-// Update statements omitted due to lack of fields other than primary key
+// Update updates the Customer in the database.
+func (q CustomerQ) Update(c *data.Customer) error {
+	var err error
+
+	// sql query
+	const sqlstr = `UPDATE public.customers SET (` +
+		`name` +
+		`) = ROW( ` +
+		`$1` +
+		`) WHERE id = $2`
+	// run query
+	err = q.db.ExecRaw(sqlstr, c.Name, c.ID)
+	return err
+}
+
+// Upsert performs an upsert for Customer.
+func (q CustomerQ) Upsert(c *data.Customer) error {
+	var err error
+	// sql query
+	const sqlstr = `INSERT INTO public.customers (` +
+		`id, name` +
+		`) VALUES (` +
+		`$1, $2` +
+		`) ON CONFLICT (id) DO UPDATE SET (` +
+		`id, name` +
+		`) = (` +
+		`EXCLUDED.id, EXCLUDED.name` +
+		`)`
+	// run query
+	err = q.db.ExecRaw(sqlstr, c.ID, c.Name)
+	if err != nil {
+		return err
+	}
+	return nil
+}
 
 // Delete deletes the Customer from the database.
 func (q CustomerQ) Delete(id int) error {
@@ -72,7 +106,7 @@ func (q CustomerQ) CustomerByID(id int) (*data.Customer, error) {
 	var err error
 	// sql query
 	const sqlstr = `SELECT ` +
-		`id ` +
+		`id, name ` +
 		`FROM public.customers ` +
 		`WHERE id = $1`
 

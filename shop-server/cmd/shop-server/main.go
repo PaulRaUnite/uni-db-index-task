@@ -60,6 +60,7 @@ func main() {
 		}
 
 		<-graceful
+		cfg.Log().Info("graceful shutdown")
 		cancel()
 		wg.Wait()
 	case migrateDownCmd.FullCommand():

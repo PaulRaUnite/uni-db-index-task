@@ -5,5 +5,6 @@ package data
 
 // Customer represents a row from 'public.customers'.
 type Customer struct {
-	ID int `db:"id"` // id
+	ID   int    `db:"id"`   // id
+	Name string `db:"name"` // name
 }

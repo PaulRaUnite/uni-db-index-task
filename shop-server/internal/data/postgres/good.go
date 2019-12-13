@@ -6,11 +6,8 @@ import (
 	"gitlab.com/distributed_lab/logan/v3/errors"
 )
 
-type GoodSelector struct {
-}
-
 // All return
-func (q GoodQ) All(selector GoodSelector) ([]data.Good, error) {
+func (q GoodQ) All(selector data.GoodSelector) ([]data.Good, error) {
 	query := squirrel.Select("*").From("goods")
 
 	var goods []data.Good

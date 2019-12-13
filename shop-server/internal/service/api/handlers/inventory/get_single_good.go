@@ -4,8 +4,6 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/shopspring/decimal"
-
 	"github.com/PaulRaUnite/uni-db-index-task/shop-server/internal/service/api/handlers"
 	"github.com/PaulRaUnite/uni-db-index-task/shop-server/internal/service/api/models"
 	"github.com/google/jsonapi"
@@ -33,12 +31,7 @@ func GetSingleGood(w http.ResponseWriter, r *http.Request) {
 		ape.RenderErr(w, problems.NotFound())
 		return
 	}
-	err = jsonapi.MarshalPayload(w, &models.Good{
-		ID:          good.ID,
-		Code:        good.Code,
-		Description: good.Description,
-		Price:       decimal.NewFromFloat(good.Price),
-	})
+	err = jsonapi.MarshalPayload(w, models.PopulateGood(*good))
 	if err != nil {
 		ape.Log(r).WithError(err).Error("failed to marshal payload")
 		ape.RenderErr(w, problems.InternalError())

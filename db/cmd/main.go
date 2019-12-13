@@ -6,6 +6,8 @@ import (
 	"log"
 	"os"
 
+	"github.com/PaulRaUnite/uni-db-index-task/db/internal/service/names"
+
 	"github.com/alecthomas/kingpin"
 	"github.com/pkg/errors"
 	"gitlab.com/distributed_lab/kit/kv"
@@ -33,6 +35,9 @@ func main() {
 
 	validateCmd := app.Command("validate", "")
 	validateFileArg := validateCmd.Arg("dataset", "").Required().File()
+
+	uploadNamesCmd := app.Command("upload-names", "")
+	uploadNamesFileArg := uploadNamesCmd.Arg("names", "").Required().File()
 
 	cmd, err := app.Parse(os.Args[1:])
 	if err != nil {
@@ -75,6 +80,15 @@ func main() {
 		err = validator.Run(file)
 		if err != nil {
 			log.Fatalln(errors.Wrap(err, "validation failed"))
+		}
+	case uploadNamesCmd.FullCommand():
+		file := *uploadNamesFileArg
+		defer file.Close()
+
+		cfg := config.NewConfig(kv.MustFromEnv())
+		err = names.Run(cfg, file)
+		if err != nil {
+			log.Fatalln(errors.Wrap(err, "name upload failed"))
 		}
 	}
 }
