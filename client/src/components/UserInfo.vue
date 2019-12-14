@@ -1,6 +1,9 @@
 <template>
     <va-card :elevation="elevation" :padding="padding" class="card">
-        <h2>User info</h2>
+        <div class="title">
+            <h2>User info</h2>
+            <va-loading v-if="loading" color="blue" size="sm" class="spinner"/>
+        </div>
         <va-form type="vertical">
             <va-form-item label="Name">
                 <va-input
@@ -99,6 +102,7 @@
 <style scoped>
 
     .spinner {
+        margin: 6px 0;
         display: inline-block;
     }
 
@@ -107,4 +111,10 @@
         margin-bottom: 14px;
     }
 
+    .title {
+        height: 34px;
+    }
+    h2 {
+        margin: 5px 0;
+    }
 </style>

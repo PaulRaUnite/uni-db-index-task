@@ -22,7 +22,7 @@ type Invoice struct {
 	Customer           *User          `jsonapi:"relation,customer"`
 	InvoiceParts       []*InvoicePart `jsonapi:"relation,invoice_parts"`
 	Date               time.Time      `jsonapi:"attr,date"`
-	Status             string         `jsonnapi:"attr,status"`
+	Status             string         `jsonapi:"attr,status"`
 }
 
 type InvoicePart struct {
@@ -88,7 +88,8 @@ type Complaint struct {
 	ID       string             `bson:"-" jsonapi:"primary,complaints"`
 	ID_      primitive.ObjectID `bson:"_id"`
 	User     *User              `jsonapi:"relation,user"`
-	Body     string             `jsonapi:"attr,body"`
+	Body     string             `jsonapi:"attr,body,required"`
 	Answer   string             `jsonapi:"attr,answer"`
 	Reviewer *User              `jsonapi:"relation,reviewer"`
+	Date     time.Time          `jsonapi:"attr,date"`
 }

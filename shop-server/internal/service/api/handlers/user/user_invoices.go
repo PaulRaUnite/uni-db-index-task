@@ -2,6 +2,7 @@ package user
 
 import (
 	"net/http"
+	"sort"
 
 	"github.com/PaulRaUnite/uni-db-index-task/shop-server/internal/service/api/handlers"
 	"github.com/PaulRaUnite/uni-db-index-task/shop-server/internal/service/api/models"
@@ -46,6 +47,10 @@ func GetInvoices(w http.ResponseWriter, r *http.Request) {
 		}
 		result = append(result, models.PopulateInvoice(invoice, *user, country.ReadableName, parts, goods))
 	}
+
+	sort.Slice(result, func(i, j int) bool {
+		return result[i].Date.After(result[j].Date)
+	})
 	err = jsonapi.MarshalPayload(w, result)
 	if err != nil {
 		ape.Log(r).WithError(err).Error("failed to marshal invoices response")

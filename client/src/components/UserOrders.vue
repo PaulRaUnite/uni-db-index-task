@@ -1,9 +1,10 @@
 <template>
     <va-card :elevation="elevation" :padding="padding" class="card">
-        <h2>Orders
-            <va-badge type="info" class="counter" margin="0px">{{orders.length}}</va-badge>
+        <div class="title">
+            <h2>Orders</h2>
+            <va-badge type="info" class="counter" margin="8px">{{orders.length}}</va-badge>
             <va-loading v-if="loading" color="blue" size="sm" class="spinner"/>
-        </h2>
+        </div>
         <va-collapse :accordion="false">
             <va-card v-for="o in orders">
                 <div>
@@ -75,7 +76,7 @@
                                 return Number.parseFloat(curr.good.price) + pre
                             }, 0);
                             return v;
-                        }).reverse();
+                        });
                         console.log(this.orders);
                     })
                     .catch((error) => {
@@ -103,6 +104,7 @@
 <style scoped>
     .spinner {
         display: inline-block;
+        margin: 6px 0;
     }
 
     .card {
@@ -115,6 +117,16 @@
     }
 
     .counter {
-        text-align: center;
+        display: inline-block;
+        float: left;
+    }
+
+    .title {
+        height: 34px;
+    }
+    h2 {
+        float: left;
+        display: inline-block;
+        margin: 5px 0;
     }
 </style>

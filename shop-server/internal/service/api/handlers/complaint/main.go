@@ -5,6 +5,7 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+	"time"
 
 	"github.com/go-chi/chi"
 	validation "github.com/go-ozzo/ozzo-validation"
@@ -83,6 +84,7 @@ func Create(w http.ResponseWriter, r *http.Request) {
 	complaint.Answer = ""
 	complaint.Reviewer = nil
 	complaint.User = models.PopulateUser(*user)
+	complaint.Date = time.Now()
 
 	_, err = handlers.ComplaintsQ(r).InsertOne(r.Context(), &complaint)
 	if err != nil {
