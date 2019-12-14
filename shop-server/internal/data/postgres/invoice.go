@@ -1,8 +1,6 @@
 package postgres
 
 import (
-	"fmt"
-
 	"github.com/Masterminds/squirrel"
 	"github.com/PaulRaUnite/uni-db-index-task/shop-server/internal/data"
 )
@@ -37,7 +35,6 @@ func (q InvoiceQ) PartsAndGoodsByInvoice(invoiceID int64) ([]data.InvoicePart, [
 	parts := make([]data.InvoicePart, 0, len(raw))
 	goods := make([]data.Good, 0, len(raw))
 	for _, s := range raw {
-		fmt.Println(s)
 		parts = append(parts, s.InvoicePart)
 		goods = append(goods, data.Good{
 			ID:          s.GoodID,

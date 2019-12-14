@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 	"time"
@@ -85,7 +86,22 @@ func IssueJWT(user data.User) (string, error) {
 }
 
 func UserIDFromClaims(r *http.Request) (int, error) {
-	token := r.Header.Get("Authorization")[7:]
+	claims, err := GetClaims(r)
+	if err != nil {
+		return 0, err
+	}
+	if claims == nil {
+		return 0, errors.New("no auth")
+	}
+	return claims.UserID, nil
+}
+
+func GetClaims(r *http.Request) (*Claims, error) {
+	token := r.Header.Get("Authorization")
+	if token == "" {
+		return nil, nil
+	}
+	token = token[7:]
 	var claims Claims
 	_, err := jwt.ParseWithClaims(token, &claims, func(token *jwt.Token) (i interface{}, err error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
@@ -95,7 +111,7 @@ func UserIDFromClaims(r *http.Request) (int, error) {
 		return mySigningKey, nil
 	})
 	if err != nil {
-		return 0, err
+		return nil, err
 	}
-	return claims.UserID, nil
+	return &claims, nil
 }

@@ -1,6 +1,8 @@
 package models
 
 import (
+	"time"
+
 	"github.com/PaulRaUnite/uni-db-index-task/shop-server/internal/data"
 	"github.com/shopspring/decimal"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -19,10 +21,13 @@ type Invoice struct {
 	CustomerID         int            `jsonapi:"attr,customer_id"`
 	Customer           *User          `jsonapi:"relation,customer"`
 	InvoiceParts       []*InvoicePart `jsonapi:"relation,invoice_parts"`
+	Date               time.Time      `jsonapi:"attr,date"`
+	Status             string         `jsonnapi:"attr,status"`
 }
 
 type InvoicePart struct {
 	ID        int64    `jsonapi:"primary,invoice_parts"`
+	Quantity  int      `jsonapi:"attr,quantity"`
 	GoodID    int      `jsonapi:"attr,good_id"`
 	Good      *Good    `jsonapi:"relation,good"`
 	InvoiceID int64    `jsonapi:"attr,invoice_id"`
@@ -63,12 +68,15 @@ func PopulateInvoice(invoice data.Invoice, user data.User, country string, parts
 		CustomerID:         invoice.CustomerID,
 		Customer:           PopulateUser(user),
 		InvoiceParts:       modelParts,
+		Date:               invoice.InvoiceDate,
+		Status:             invoice.Status,
 	}
 }
 
 func PopulateInvoicePart(part data.InvoicePart, good data.Good) *InvoicePart {
 	return &InvoicePart{
 		ID:        part.ID,
+		Quantity:  part.Quantity,
 		GoodID:    part.GoodID,
 		Good:      PopulateGood(good),
 		InvoiceID: part.InvoiceID,

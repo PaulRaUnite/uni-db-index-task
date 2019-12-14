@@ -34,13 +34,13 @@ func (q InvoiceQ) Insert(i *data.Invoice) error {
 
 	// sql insert query, primary key provided by sequence
 	const sqlstr = `INSERT INTO public.invoices (` +
-		`customer_id, destination_country_id, invoice_date` +
+		`customer_id, destination_country_id, invoice_date, status` +
 		`) VALUES (` +
-		`$1, $2, $3` +
+		`$1, $2, $3, $4` +
 		`) RETURNING id`
 
 	// run query
-	err = q.db.GetRaw(&i.ID, sqlstr, i.CustomerID, i.DestinationCountryID, i.InvoiceDate)
+	err = q.db.GetRaw(&i.ID, sqlstr, i.CustomerID, i.DestinationCountryID, i.InvoiceDate, i.Status)
 	if err != nil {
 		return err
 	}
@@ -54,12 +54,12 @@ func (q InvoiceQ) Update(i *data.Invoice) error {
 
 	// sql query
 	const sqlstr = `UPDATE public.invoices SET (` +
-		`customer_id, destination_country_id, invoice_date` +
+		`customer_id, destination_country_id, invoice_date, status` +
 		`) = ROW( ` +
-		`$1, $2, $3` +
-		`) WHERE id = $4`
+		`$1, $2, $3, $4` +
+		`) WHERE id = $5`
 	// run query
-	err = q.db.ExecRaw(sqlstr, i.CustomerID, i.DestinationCountryID, i.InvoiceDate, i.ID)
+	err = q.db.ExecRaw(sqlstr, i.CustomerID, i.DestinationCountryID, i.InvoiceDate, i.Status, i.ID)
 	return err
 }
 
@@ -68,16 +68,16 @@ func (q InvoiceQ) Upsert(i *data.Invoice) error {
 	var err error
 	// sql query
 	const sqlstr = `INSERT INTO public.invoices (` +
-		`id, customer_id, destination_country_id, invoice_date` +
+		`id, customer_id, destination_country_id, invoice_date, status` +
 		`) VALUES (` +
-		`$1, $2, $3, $4` +
+		`$1, $2, $3, $4, $5` +
 		`) ON CONFLICT (id) DO UPDATE SET (` +
-		`id, customer_id, destination_country_id, invoice_date` +
+		`id, customer_id, destination_country_id, invoice_date, status` +
 		`) = (` +
-		`EXCLUDED.id, EXCLUDED.customer_id, EXCLUDED.destination_country_id, EXCLUDED.invoice_date` +
+		`EXCLUDED.id, EXCLUDED.customer_id, EXCLUDED.destination_country_id, EXCLUDED.invoice_date, EXCLUDED.status` +
 		`)`
 	// run query
-	err = q.db.ExecRaw(sqlstr, i.ID, i.CustomerID, i.DestinationCountryID, i.InvoiceDate)
+	err = q.db.ExecRaw(sqlstr, i.ID, i.CustomerID, i.DestinationCountryID, i.InvoiceDate, i.Status)
 	if err != nil {
 		return err
 	}
@@ -106,7 +106,7 @@ func (q InvoiceQ) InvoiceByID(id int64) (*data.Invoice, error) {
 	var err error
 	// sql query
 	const sqlstr = `SELECT ` +
-		`id, customer_id, destination_country_id, invoice_date ` +
+		`id, customer_id, destination_country_id, invoice_date, status ` +
 		`FROM public.invoices ` +
 		`WHERE id = $1`
 

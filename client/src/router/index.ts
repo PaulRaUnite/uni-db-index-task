@@ -3,6 +3,10 @@ import VueRouter from 'vue-router';
 import Home from '../views/Home.vue';
 import Complaints from "../views/Complaints.vue";
 import AuthPage from "@/views/AuthPage.vue";
+import Inventory from "@/views/Inventory.vue";
+import Users from "@/views/Users.vue";
+import UserPage from "@/views/UserPage.vue";
+import GoodPage from "@/views/GoodPage.vue";
 
 Vue.use(VueRouter);
 
@@ -22,6 +26,26 @@ const routes = [
         path: '/complaints',
         name: 'complaints',
         component: Complaints,
+    },
+    {
+        path: '/inventory',
+        name: 'inventory',
+        component: Inventory,
+    },
+    {
+        path: '/inventory/:id',
+        name: 'good',
+        component: GoodPage,
+    },
+    {
+        path: '/users',
+        name: 'users',
+        component: Users,
+    },
+    {
+        path: '/user/:username',
+        name: 'user',
+        component: UserPage,
     },
     {
         path: "*",

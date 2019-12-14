@@ -7,14 +7,14 @@
         </va-page-header>
         <h2>Hi!</h2>
         <p>The page is a summary of the project.</p>
-        <p>Now the following is implemented:</p>
+        <p>Currently the following was implemented:</p>
         <ul>
             <li><router-link to="/auth#signin">Log in</router-link></li>
             <li><router-link to="/auth#signup">Sign up</router-link></li>
         </ul>
         <p>TODO:</p>
         <ul>
-            <li><router-link to="/me">Account</router-link></li>
+            <li><router-link to="/user/paulra">Account</router-link></li>
             <li><router-link to="/home">App template</router-link></li>
             <li><router-link to="/complaints">Complaints</router-link></li>
             <li><router-link to="/orders">Orders</router-link></li>

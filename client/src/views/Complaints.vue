@@ -13,7 +13,7 @@
 
             <div slot="actions">
                 <va-button type="primary">
-                    <va-icon type="plus" icon-style="regular" margin="0 7px 0 0"></va-icon>
+                    <va-icon type="plus" margin="0 7px 0 0"></va-icon>
                     Create complaint
                 </va-button>
             </div>
@@ -23,12 +23,15 @@
             </div>
         </va-page-header>
 
+        <va-loading v-if="loading"/>
         <complaint v-for="c in complaints" v-bind:complaint="c"/>
     </va-page>
 </template>
 
 <script>
     import Complaint from "@/components/Complaint";
+    import {jsoner} from "@/_helpers/jsoner";
+    import {withjwt} from "@/_helpers/withjwt";
 
     export default {
         name: "Complaints",
@@ -51,42 +54,42 @@
                 postMessage()
             },
             fetchData() {
-                this.error = this.complaints = null;
                 this.loading = true;
-                fetch(`http://api.localhost/complaint`).then(resp => {
-                    if (!resp.ok) {
-                        return Promise.reject(resp.statusText)
-                    }
-                    return resp.json()
-                }).catch(reason => {
-                    this.error = reason;
-                }).then(result => {
-                    this.complaints = result.data.map((v, i, _) => {
-                        let user_id = v.relationships.user.data.id;
-                        let user = {
-                            id: user_id,
-                            name: result.included.find((v, i, _) => {
-                                return v.type === "customers" && v.id === user_id
-                            }).attributes.name
-                        };
-                        let reviewer;
-                        if (v.relationships.reviewer.data) {
-                            const reviewer_id = v.relationships.reviewer.data.id;
-                            reviewer = {
-                                id: reviewer_id,
+                jsoner(withjwt(`http://api.localhost/complaint`, this.$store.state.token))
+                    .then(result => {
+                        this.complaints = result.data.map((v, i, _) => {
+                            let user_id = v.relationships.user.data.id;
+                            let user = {
+                                id: user_id,
                                 name: result.included.find((v, i, _) => {
-                                    return v.type === "customers" && v.id === reviewer_id
+                                    return v.type === "customers" && v.id === user_id
                                 }).attributes.name
+                            };
+                            let reviewer;
+                            if (v.relationships.reviewer.data) {
+                                const reviewer_id = v.relationships.reviewer.data.id;
+                                reviewer = {
+                                    id: reviewer_id,
+                                    name: result.included.find((v, i, _) => {
+                                        return v.type === "customers" && v.id === reviewer_id
+                                    }).attributes.name
+                                }
                             }
-                        }
-                        return {
-                            id: v.id,
-                            body: v.attributes.body,
-                            answer: v.attributes.answer,
-                            user: user,
-                            reviewer: reviewer,
-                        }
-                    });
+                            return {
+                                id: v.id,
+                                body: v.attributes.body,
+                                answer: v.attributes.answer,
+                                user: user,
+                                reviewer: reviewer,
+                            }
+                        });
+                    }).catch(reason => {
+                    this.notification.warning({
+                        title: "Error occured",
+                        message: reason,
+                    })
+                }).finally(() => {
+                    this.loading = false;
                 })
             }
         }

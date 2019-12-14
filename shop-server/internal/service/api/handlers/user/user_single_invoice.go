@@ -14,19 +14,14 @@ import (
 )
 
 func GetInvoice(w http.ResponseWriter, r *http.Request) {
-	rawUserID := chi.URLParam(r, "user-id")
-	userID, err := strconv.Atoi(rawUserID)
-	if err != nil {
-		ape.RenderErr(w, problems.BadRequest(validation.Errors{"user-id": err})...)
-		return
-	}
+	username := chi.URLParam(r, "username")
 	rawInvoiceID := chi.URLParam(r, "invoice-id")
 	invoiceID, err := strconv.Atoi(rawInvoiceID)
 	if err != nil {
 		ape.RenderErr(w, problems.BadRequest(validation.Errors{"invoice-id": err})...)
 		return
 	}
-	user, err := handlers.UserQ(r).UserByID(userID)
+	user, err := handlers.UserQ(r).UserByLogin(username)
 	if err != nil {
 		ape.Log(r).WithError(err).Error("failed to get user")
 		ape.RenderErr(w, problems.InternalError())
@@ -42,7 +37,7 @@ func GetInvoice(w http.ResponseWriter, r *http.Request) {
 		ape.RenderErr(w, problems.InternalError())
 		return
 	}
-	if invoice == nil || invoice.CustomerID != userID {
+	if invoice == nil || invoice.CustomerID != user.ID {
 		ape.RenderErr(w, problems.NotFound())
 		return
 	}

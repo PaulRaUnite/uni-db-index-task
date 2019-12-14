@@ -19,41 +19,14 @@
 
         <va-topbar theme="dark">
             <div slot="left">
-                <va-dropdown>
-                    <div slot="trigger">
-                        <va-button type="dark" round>
-                            <va-icon type="bars" color="white"></va-icon>
-                        </va-button>
-                    </div>
-                    <li>
-                        <router-link :to="'/'">Home</router-link>
-                    </li>
-                    <li>
-                        <router-link :to="'/documentation'">Documentation</router-link>
-                    </li>
-                </va-dropdown>
-
-                <span style="font-weight:700;margin:0 20px 0 10px;">
-                    Documentation
-                </span>
-
-                <va-dropdown style="margin-right: 10px;">
-                    <div slot="trigger">
-                        <va-button type="dark">
-                            Templates
-                            <va-icon type="angle-down" margin="0 2px 0 10px"></va-icon>
-                        </va-button>
-                    </div>
-                    <li>
-                        <router-link to="/templates/signin">Sign-in</router-link>
-                    </li>
-                </va-dropdown>
-
+                <div slot="trigger">
+                    <va-button type="dark" @click="() => this.$router.push('/')">
+                        <va-icon type="home"/>
+                    </va-button>
+                </div>
             </div>
             <div slot="right">
-                <va-button type="dark" round>
-                    <va-icon type="user-circle" size="1.25em"></va-icon>
-                </va-button>
+                <inline-account/>
             </div>
         </va-topbar>
 
@@ -80,8 +53,10 @@
 </template>
 
 <script>
+    import InlineAccount from "@/components/InlineAccount";
     export default {
         name: "AppLayout",
+        components: {InlineAccount},
         data() {
             return {}
         },

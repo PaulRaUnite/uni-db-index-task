@@ -8,6 +8,8 @@ Vue.use(Vuex);
 interface State {
     token: string | null
     user_id: number | null
+    username: string | null
+    account_type: number | null
     logged: boolean
     layout: string
 }
@@ -20,19 +22,26 @@ export default new Vuex.Store<State>({
     state: {
         token: null,
         user_id: null,
+        username: null,
         logged: false,
         layout: 'app-layout',
+        account_type: null,
     },
     mutations: {
-        login(state: State, new_token: string) {
-            state.user_id = JSON.parse(base64url.decode(new_token.split(".")[1])).user_id;
-            state.token = new_token;
+        signin(state: State, payload: { token: string, username: string }) {
+            let claims = JSON.parse(base64url.decode(payload.token.split(".")[1]));
+            state.user_id = claims.user_id;
+            state.token = payload.token;
             state.logged = true;
+            state.account_type = claims.account_type;
+            state.username = payload.username;
         },
-        logout(state: State) {
+        signout(state: State) {
             state.user_id = null;
             state.token = null;
             state.logged = false;
+            state.account_type = null;
+            state.username = null;
         },
     },
     actions: {},

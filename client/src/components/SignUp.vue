@@ -21,7 +21,7 @@
     import {signup} from "@/_helpers/signup";
 
     export default {
-        name: "Signing",
+        name: "sign-up",
         data() {
             return {
                 submitting: false,
@@ -45,7 +45,7 @@
                                 this.$router.push("/auth#signin");
                             }
                         ).catch((error) => {
-                        if (error.status === "409") {
+                        if (error.status === 409) {
                             this.notification.warning({
                                     title: "Username conflict.",
                                     duration: 3000,

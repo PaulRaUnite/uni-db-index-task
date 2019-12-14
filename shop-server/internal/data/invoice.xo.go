@@ -11,4 +11,5 @@ type Invoice struct {
 	CustomerID           int       `db:"customer_id"`            // customer_id
 	DestinationCountryID int       `db:"destination_country_id"` // destination_country_id
 	InvoiceDate          time.Time `db:"invoice_date"`           // invoice_date
+	Status               string    `db:"status"`                 // status
 }
