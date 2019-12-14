@@ -26,6 +26,9 @@ func Run(ctx context.Context, config config.Config) {
 			w.Header().Set("Access-Control-Allow-Origin", "*")
 			w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
 			w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, Authorization")
+			if r.Method == "OPTIONS" {
+				return
+			}
 			handler.ServeHTTP(w, r)
 		})
 	})
@@ -36,8 +39,9 @@ func Run(ctx context.Context, config config.Config) {
 	}))
 
 	r.Get("/health", func(writer http.ResponseWriter, r *http.Request) {})
-	r.Get("/user", user.Get)
-	r.Get("/user/{user-id}/login", user.LogIn)
+	r.Get("/user", user.All)
+	r.Get("/user/login", user.LogIn)
+	r.Post("/user/signup", user.SignUp)
 	r.Get("/user/{user-id}/invoice", user.GetInvoices)
 	r.Get("/user/{user-id}/invoice/{invoice-id}", user.GetInvoice)
 	r.Get("/inventory/good", inventory.GetGoods)

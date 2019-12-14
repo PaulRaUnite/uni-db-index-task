@@ -65,7 +65,7 @@ func Create(w http.ResponseWriter, r *http.Request) {
 		ape.RenderErr(w, problems.NotAllowed(err))
 		return
 	}
-	user, err := handlers.CustomerQ(r).CustomerByID(userID)
+	user, err := handlers.UserQ(r).UserByID(userID)
 	if err != nil {
 		ape.Log(r).WithError(err).Error("failed to get customer")
 		ape.RenderErr(w, problems.InternalError())
@@ -142,7 +142,7 @@ func Review(w http.ResponseWriter, r *http.Request) {
 		ape.RenderErr(w, problems.NotAllowed(err))
 		return
 	}
-	user, err := handlers.CustomerQ(r).CustomerByID(userID)
+	user, err := handlers.UserQ(r).UserByID(userID)
 	if err != nil {
 		ape.Log(r).WithError(err).Error("failed to get customer")
 		ape.RenderErr(w, problems.InternalError())

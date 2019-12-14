@@ -2,7 +2,7 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import Home from '../views/Home.vue';
 import Complaints from "../views/Complaints.vue";
-import Login from "../views/Login.vue";
+import AuthPage from "@/views/AuthPage.vue";
 
 Vue.use(VueRouter);
 
@@ -13,9 +13,10 @@ const routes = [
         component: Home,
     },
     {
-        path: '/login',
-        name: 'login',
-        component: Login,
+        path: '/auth',
+        name: 'auth',
+        meta: {layout: "blank"},
+        component: AuthPage,
     },
     {
         path: '/complaints',

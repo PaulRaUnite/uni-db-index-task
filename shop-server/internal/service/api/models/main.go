@@ -30,8 +30,9 @@ type InvoicePart struct {
 }
 
 type User struct {
-	ID   int    `jsonapi:"primary,customers"`
-	Name string `jsonapi:"attr,name"`
+	ID    int    `jsonapi:"primary,customers"`
+	Login string `jsonapi:"attr,username"`
+	Name  string `jsonapi:"attr,name"`
 }
 
 func PopulateGood(good data.Good) *Good {
@@ -43,14 +44,15 @@ func PopulateGood(good data.Good) *Good {
 	}
 }
 
-func PopulateUser(customer data.Customer) *User {
+func PopulateUser(user data.User) *User {
 	return &User{
-		ID:   customer.ID,
-		Name: customer.Name,
+		ID:    user.ID,
+		Login: user.Login,
+		Name:  user.Name,
 	}
 }
 
-func PopulateInvoice(invoice data.Invoice, user data.Customer, country string, parts []data.InvoicePart, goods []data.Good) *Invoice {
+func PopulateInvoice(invoice data.Invoice, user data.User, country string, parts []data.InvoicePart, goods []data.Good) *Invoice {
 	modelParts := make([]*InvoicePart, 0, len(parts))
 	for i, part := range parts {
 		modelParts = append(modelParts, PopulateInvoicePart(part, goods[i]))

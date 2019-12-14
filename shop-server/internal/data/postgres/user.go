@@ -9,13 +9,13 @@ import (
 )
 
 // All return
-func (q CustomerQ) All(selector data.CustomerSelector) ([]data.Customer, error) {
-	query := squirrel.Select("*").From("customers")
-	if selector.Search != nil {
-		query = query.Where("name % ?", *selector.Search).OrderBy(fmt.Sprintf("name <-> '%s' DESC", *selector.Search))
+func (q UserQ) All(selector data.UserSelector) ([]data.User, error) {
+	query := squirrel.Select("*").From("users")
+	if selector.Name != nil {
+		query = query.Where("name % ?", *selector.Name).OrderBy(fmt.Sprintf("name <-> '%s' DESC", *selector.Name))
 	}
 
-	var customers []data.Customer
+	var customers []data.User
 	err := q.db.Select(&customers, query)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to select customers")

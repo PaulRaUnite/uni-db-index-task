@@ -22,6 +22,7 @@ require (
 	github.com/golang/snappy v0.0.1 // indirect
 	github.com/google/jsonapi v0.0.0-20181016150055-d0428f63eb51
 	github.com/jmoiron/sqlx v1.2.0 // indirect
+	github.com/lib/pq v1.2.0
 	github.com/pelletier/go-toml v1.6.0 // indirect
 	github.com/pkg/errors v0.8.1
 	github.com/rogpeppe/go-internal v1.5.0 // indirect

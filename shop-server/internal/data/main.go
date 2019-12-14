@@ -12,7 +12,7 @@ type Storage interface {
 	DB() *pgdb.DB
 	Transaction(tx func() error) error
 	GoodQ() GoodQ
-	CustomerQ() CustomerQ
+	UserQ() UserQ
 	InvoiceQ() InvoiceQ
 	InvoicePartQ() InvoicePartQ
 	CountryQ() CountryQ
@@ -30,13 +30,15 @@ type CountryQ interface {
 	CountryByID(id int) (*Country, error)
 }
 
-type CustomerSelector struct {
-	Search *string
+type UserSelector struct {
+	Name *string
 }
 
-type CustomerQ interface {
-	CustomerByID(id int) (*Customer, error)
-	All(selector CustomerSelector) ([]Customer, error)
+type UserQ interface {
+	UserByID(id int) (*User, error)
+	All(selector UserSelector) ([]User, error)
+	UserByLogin(login string) (*User, error)
+	Insert(u *User) error
 }
 
 type InvoiceQ interface {

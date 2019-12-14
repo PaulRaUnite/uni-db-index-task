@@ -19,8 +19,8 @@ func GoodQ(r *http.Request) data.GoodQ {
 	return Config(r).ClonedStorage().GoodQ()
 }
 
-func CustomerQ(r *http.Request) data.CustomerQ {
-	return Config(r).ClonedStorage().CustomerQ()
+func UserQ(r *http.Request) data.UserQ {
+	return Config(r).ClonedStorage().UserQ()
 }
 
 func CountryQ(r *http.Request) data.CountryQ {
@@ -51,16 +51,26 @@ func SurveysQ(r *http.Request) *mongo.Collection {
 	return Config(r).Surveys()
 }
 
+type AccountType int
+
+const (
+	User    AccountType = 0
+	Reviwer AccountType = 1
+	Admin   AccountType = 2
+)
+
 type Claims struct {
-	UserID int `json:"user_id,required"`
+	UserID      int         `json:"user_id,required"`
+	AccountType AccountType `json:"account_type"`
 	jwt.StandardClaims
 }
 
 var mySigningKey = []byte("AllYourBase")
 
-func IssueJWT(userID int) (string, error) {
+func IssueJWT(user data.User) (string, error) {
 	claims := Claims{
-		UserID: userID,
+		UserID:      user.ID,
+		AccountType: AccountType(user.AccountType),
 		StandardClaims: jwt.StandardClaims{
 			IssuedAt: time.Now().Unix(),
 			Issuer:   "shop-server",
