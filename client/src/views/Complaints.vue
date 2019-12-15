@@ -12,10 +12,6 @@
             </div>
 
             <div slot="actions">
-                <va-button type="primary">
-                    <va-icon type="plus" margin="0 7px 0 0"></va-icon>
-                    Create complaint
-                </va-button>
             </div>
 
             <div slot="bottom">
@@ -23,15 +19,23 @@
             </div>
         </va-page-header>
 
-        <va-loading v-if="loading"/>
-        <complaint v-for="c in complaints" v-bind:complaint="c"/>
+        <va-loading v-if="loading" center/>
+        <va-row :gutter="15">
+            <va-column :xs="12" :sm="6" :md="6">
+                <h2>Not reviewed</h2>
+                <complaint v-for="c in unreviewed" v-on:reviewed="fetchData" :complaint="c"/>
+            </va-column>
+            <va-column :xs="12" :sm="6" :md="6">
+                <h2>Reviewed</h2>
+                <complaint v-for="c in reviewed" :complaint="c"/>
+            </va-column>
+        </va-row>
     </va-page>
 </template>
 
 <script>
     import Complaint from "@/components/Complaint";
-    import {jsoner} from "@/_helpers/jsoner";
-    import {withjwt} from "@/_helpers/withjwt";
+    import {all_complaints} from "@/_helpers/complaints";
 
     export default {
         name: "Complaints",
@@ -39,56 +43,34 @@
         data() {
             return {
                 loading: false,
-                complaints: null,
+                complaints: [],
                 error: null
             }
         },
         created() {
             this.fetchData()
         },
-        watch: {
-            '$route': 'fetchData'
+        computed: {
+            reviewed() {
+                return this.complaints.filter((v,i,_) => v.answer)
+            },
+            unreviewed() {
+                return this.complaints.filter((v,i,_) => !v.answer)
+            }
         },
         methods: {
-            newComplaint(text) {
-                postMessage()
-            },
             fetchData() {
                 this.loading = true;
-                jsoner(withjwt(`http://api.localhost/complaint`, this.$store.state.token))
+                all_complaints(this.$store.state.token)
                     .then(result => {
-                        this.complaints = result.data.map((v, i, _) => {
-                            let user_id = v.relationships.user.data.id;
-                            let user = {
-                                id: user_id,
-                                name: result.included.find((v, i, _) => {
-                                    return v.type === "customers" && v.id === user_id
-                                }).attributes.name
-                            };
-                            let reviewer;
-                            if (v.relationships.reviewer.data) {
-                                const reviewer_id = v.relationships.reviewer.data.id;
-                                reviewer = {
-                                    id: reviewer_id,
-                                    name: result.included.find((v, i, _) => {
-                                        return v.type === "customers" && v.id === reviewer_id
-                                    }).attributes.name
-                                }
-                            }
-                            return {
-                                id: v.id,
-                                body: v.attributes.body,
-                                answer: v.attributes.answer,
-                                user: user,
-                                reviewer: reviewer,
-                            }
-                        });
-                    }).catch(reason => {
-                    this.notification.warning({
-                        title: "Error occured",
-                        message: reason,
+                        this.complaints = result;
                     })
-                }).finally(() => {
+                    .catch(reason => {
+                        this.notification.warning({
+                            title: "Error occured",
+                            message: reason,
+                        })
+                    }).finally(() => {
                     this.loading = false;
                 })
             }

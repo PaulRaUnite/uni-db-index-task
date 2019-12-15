@@ -52,7 +52,7 @@ func GetComplaints(w http.ResponseWriter, r *http.Request) {
 		result = append(result, complaint)
 	}
 	sort.Slice(result, func(i, j int) bool {
-		return result[i].Date.After(result[j].Date)
+		return result[i].CreatedAt.After(result[j].CreatedAt)
 	})
 	if err = cursor.Err(); err != nil {
 		ape.Log(r).WithError(err).Error("failed to get complaints")

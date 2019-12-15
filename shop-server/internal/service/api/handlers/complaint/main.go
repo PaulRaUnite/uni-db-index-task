@@ -5,6 +5,7 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+	"sort"
 	"time"
 
 	"github.com/go-chi/chi"
@@ -49,6 +50,9 @@ func GetAll(w http.ResponseWriter, r *http.Request) {
 		ape.RenderErr(w, problems.InternalError())
 		return
 	}
+	sort.Slice(result, func(i, j int) bool {
+		return result[i].CreatedAt.After(result[j].CreatedAt)
+	})
 	err = jsonapi.MarshalPayload(w, result)
 	if err != nil {
 		ape.Log(r).WithError(err).Error("failed to marshal complaints payload")
@@ -84,7 +88,7 @@ func Create(w http.ResponseWriter, r *http.Request) {
 	complaint.Answer = ""
 	complaint.Reviewer = nil
 	complaint.User = models.PopulateUser(*user)
-	complaint.Date = time.Now()
+	complaint.CreatedAt = time.Now()
 
 	_, err = handlers.ComplaintsQ(r).InsertOne(r.Context(), &complaint)
 	if err != nil {
@@ -156,7 +160,7 @@ func Review(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	result, err := handlers.ComplaintsQ(r).UpdateOne(r.Context(), bson.M{"_id": objID},
-		bson.M{"$set": bson.M{"reviewer": user, "answer": complaint.Answer}})
+		bson.M{"$set": bson.M{"reviewer": user, "answer": complaint.Answer, "reviewed_at": time.Now()}})
 	if err != nil {
 		ape.Log(r).WithError(err).Error("failed to update complaint")
 		ape.RenderErr(w, problems.InternalError())

@@ -85,11 +85,12 @@ func PopulateInvoicePart(part data.InvoicePart, good data.Good) *InvoicePart {
 }
 
 type Complaint struct {
-	ID       string             `bson:"-" jsonapi:"primary,complaints"`
-	ID_      primitive.ObjectID `bson:"_id"`
-	User     *User              `jsonapi:"relation,user"`
-	Body     string             `jsonapi:"attr,body,required"`
-	Answer   string             `jsonapi:"attr,answer"`
-	Reviewer *User              `jsonapi:"relation,reviewer"`
-	Date     time.Time          `jsonapi:"attr,date"`
+	ID         string             `bson:"-" jsonapi:"primary,complaints"`
+	ID_        primitive.ObjectID `bson:"_id"`
+	User       *User              `jsonapi:"relation,user"`
+	Body       string             `jsonapi:"attr,body,required"`
+	Answer     string             `jsonapi:"attr,answer"`
+	Reviewer   *User              `jsonapi:"relation,reviewer"`
+	CreatedAt  time.Time          `bson:"created_at" jsonapi:"attr,created_at"`
+	ReviewedAt time.Time          `bson:"reviewed_at" jsonapi:"attr,reviewed_at"`
 }
