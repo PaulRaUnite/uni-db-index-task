@@ -9,10 +9,17 @@ import (
 	"github.com/google/jsonapi"
 	"gitlab.com/distributed_lab/ape"
 	"gitlab.com/distributed_lab/ape/problems"
+	"gitlab.com/distributed_lab/urlval"
 )
 
 func GetGoods(w http.ResponseWriter, r *http.Request) {
-	goods, err := handlers.GoodQ(r).All(data.GoodSelector{})
+	selector := data.GoodSelector{}
+	err := urlval.Decode(r.URL.Query(), &selector)
+	if err != nil {
+		ape.RenderErr(w, problems.BadRequest(err)...)
+		return
+	}
+	goods, err := handlers.GoodQ(r).All(selector)
 	if err != nil {
 		ape.Log(r).WithError(err).Error("failed to select goods")
 		ape.RenderErr(w, problems.InternalError())

@@ -13,6 +13,7 @@ type Good struct {
 	Code        string          `jsonapi:"attr,code"`
 	Description string          `jsonapi:"attr,description"`
 	Price       decimal.Decimal `jsonapi:"attr,price"`
+	Amount      int16           `jsonapi:"attr,amount"`
 }
 
 type Invoice struct {
@@ -46,6 +47,7 @@ func PopulateGood(good data.Good) *Good {
 		Code:        good.Code,
 		Description: good.Description,
 		Price:       decimal.NewFromFloat(good.Price),
+		Amount:      good.Amount,
 	}
 }
 
@@ -93,4 +95,8 @@ type Complaint struct {
 	Reviewer   *User              `jsonapi:"relation,reviewer"`
 	CreatedAt  time.Time          `bson:"created_at" jsonapi:"attr,created_at"`
 	ReviewedAt time.Time          `bson:"reviewed_at" jsonapi:"attr,reviewed_at"`
+}
+
+type Counter struct {
+	Value int64 `jsonapi:"attr,value"`
 }

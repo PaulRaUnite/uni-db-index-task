@@ -100,8 +100,4 @@
 </script>
 
 <style module>
-    .toggle {
-        float: right;
-        padding: 5px;
-    }
 </style>

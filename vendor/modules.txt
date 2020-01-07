@@ -15,8 +15,6 @@ github.com/dgrijalva/jwt-go
 github.com/evalphobia/logrus_sentry
 # github.com/fsnotify/fsnotify v1.4.7
 github.com/fsnotify/fsnotify
-# github.com/gemnasium/logrus-graylog-hook v2.0.7+incompatible
-github.com/gemnasium/logrus-graylog-hook
 # github.com/getsentry/raven-go v0.2.1-0.20190619092523-5c24d5110e0e
 github.com/getsentry/raven-go
 # github.com/go-chi/chi v4.0.2+incompatible
@@ -117,7 +115,7 @@ gitlab.com/distributed_lab/ape
 gitlab.com/distributed_lab/ape/problems
 # gitlab.com/distributed_lab/figure v2.1.0+incompatible
 gitlab.com/distributed_lab/figure
-# gitlab.com/distributed_lab/kit v1.4.0
+# gitlab.com/distributed_lab/kit v1.6.0
 gitlab.com/distributed_lab/kit/comfig
 gitlab.com/distributed_lab/kit/kv
 gitlab.com/distributed_lab/kit/pgdb
@@ -125,6 +123,10 @@ gitlab.com/distributed_lab/kit/pgdb
 gitlab.com/distributed_lab/logan/v3
 gitlab.com/distributed_lab/logan/v3/errors
 gitlab.com/distributed_lab/logan/v3/fields
+# gitlab.com/distributed_lab/urlval v1.0.2
+gitlab.com/distributed_lab/urlval
+gitlab.com/distributed_lab/urlval/internal
+gitlab.com/distributed_lab/urlval/internal/betterreflect
 # go.mongodb.org/mongo-driver v1.1.3
 go.mongodb.org/mongo-driver/bson
 go.mongodb.org/mongo-driver/bson/bsoncodec

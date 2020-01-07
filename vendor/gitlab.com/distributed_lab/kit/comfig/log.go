@@ -4,7 +4,6 @@ import (
 	"time"
 
 	"github.com/evalphobia/logrus_sentry"
-	graylog "github.com/gemnasium/logrus-graylog-hook"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"gitlab.com/distributed_lab/figure"
@@ -60,16 +59,6 @@ func (l *logger) Log() *logan.Entry {
 			entry.AddLogrusHook(hook)
 		}
 
-		if config.Graylog.Address != nil {
-			hook := graylog.NewGraylogHook(
-				*config.Graylog.Address,
-				map[string]interface{}{
-					"release": l.options.Release,
-				},
-			)
-			entry.AddLogrusHook(hook)
-		}
-
 		return entry
 	}).(*logan.Entry)
 }
@@ -77,11 +66,6 @@ func (l *logger) Log() *logan.Entry {
 type loggerConfig struct {
 	Level         logan.Level `fig:"level"`
 	DisableSentry bool        `fig:"disable_sentry"`
-	// yeah, I know. but, unlike Sentry, it's useless
-	// outside of logan.
-	Graylog struct {
-		Address *string `fig:"addr"`
-	} `fig:"graylog"`
 }
 
 func parseLogConfig(raw map[string]interface{}) (*loggerConfig, error) {

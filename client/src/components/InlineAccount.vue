@@ -5,16 +5,18 @@
                 <va-icon :type="icon_type" size="1.25em"/>
             </va-button>
         </div>
-        <sign-in theme="primary" v-if="!$store.state.logged"/>
-        <va-card v-if="$store.state.logged">
-            <va-button block @click="() => $router.push(`/user/${$store.state.username}`)"
-                       icon-before="user-cog">
-                Account
-            </va-button>
-            <va-button block icon-before="sign-out-alt" @click="logout">
-                Sign out
-            </va-button>
-        </va-card>
+        <div class="dropdown-sp">
+            <sign-in theme="primary" v-if="!$store.state.logged"/>
+            <va-card v-if="$store.state.logged">
+                <va-button block @click="() => $router.push(`/user/${$store.state.username}`)"
+                           icon-before="user-cog">
+                    Account
+                </va-button>
+                <va-button block icon-before="sign-out-alt" @click="logout">
+                    Sign out
+                </va-button>
+            </va-card>
+        </div>
     </va-dropdown>
 </template>
 
@@ -43,7 +45,7 @@
 </script>
 
 <style module>
-    .dropdown {
-        width: 300px;
+    .dropdown-sp {
+        width: 400px;
     }
 </style>

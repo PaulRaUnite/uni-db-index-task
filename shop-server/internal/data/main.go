@@ -19,11 +19,14 @@ type Storage interface {
 }
 
 type GoodSelector struct {
+	pgdb.OffsetPageParams
+	Description *string `filter:"description"`
 }
 
 type GoodQ interface {
 	All(selector GoodSelector) ([]Good, error)
 	GoodByID(id int) (*Good, error)
+	AllCount(description *string) (int64, error)
 }
 
 type CountryQ interface {

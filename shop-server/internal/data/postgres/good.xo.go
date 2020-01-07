@@ -34,13 +34,13 @@ func (q GoodQ) Insert(g *data.Good) error {
 
 	// sql insert query, primary key provided by sequence
 	const sqlstr = `INSERT INTO public.goods (` +
-		`code, description, price` +
+		`code, description, price, amount` +
 		`) VALUES (` +
-		`$1, $2, $3` +
+		`$1, $2, $3, $4` +
 		`) RETURNING id`
 
 	// run query
-	err = q.db.GetRaw(&g.ID, sqlstr, g.Code, g.Description, g.Price)
+	err = q.db.GetRaw(&g.ID, sqlstr, g.Code, g.Description, g.Price, g.Amount)
 	if err != nil {
 		return err
 	}
@@ -54,12 +54,12 @@ func (q GoodQ) Update(g *data.Good) error {
 
 	// sql query
 	const sqlstr = `UPDATE public.goods SET (` +
-		`code, description, price` +
+		`code, description, price, amount` +
 		`) = ROW( ` +
-		`$1, $2, $3` +
-		`) WHERE id = $4`
+		`$1, $2, $3, $4` +
+		`) WHERE id = $5`
 	// run query
-	err = q.db.ExecRaw(sqlstr, g.Code, g.Description, g.Price, g.ID)
+	err = q.db.ExecRaw(sqlstr, g.Code, g.Description, g.Price, g.Amount, g.ID)
 	return err
 }
 
@@ -68,16 +68,16 @@ func (q GoodQ) Upsert(g *data.Good) error {
 	var err error
 	// sql query
 	const sqlstr = `INSERT INTO public.goods (` +
-		`id, code, description, price` +
+		`id, code, description, price, amount` +
 		`) VALUES (` +
-		`$1, $2, $3, $4` +
+		`$1, $2, $3, $4, $5` +
 		`) ON CONFLICT (id) DO UPDATE SET (` +
-		`id, code, description, price` +
+		`id, code, description, price, amount` +
 		`) = (` +
-		`EXCLUDED.id, EXCLUDED.code, EXCLUDED.description, EXCLUDED.price` +
+		`EXCLUDED.id, EXCLUDED.code, EXCLUDED.description, EXCLUDED.price, EXCLUDED.amount` +
 		`)`
 	// run query
-	err = q.db.ExecRaw(sqlstr, g.ID, g.Code, g.Description, g.Price)
+	err = q.db.ExecRaw(sqlstr, g.ID, g.Code, g.Description, g.Price, g.Amount)
 	if err != nil {
 		return err
 	}
@@ -105,16 +105,16 @@ func (q GoodQ) UpsertGoodByCode(g *data.Good) error {
 	var err error
 	// sql query
 	const sqlstr = `INSERT INTO public.goods (` +
-		`code, description, price` +
+		`code, description, price, amount` +
 		`) VALUES (` +
-		`$1, $2, $3` +
+		`$1, $2, $3, $4` +
 		`) ON CONFLICT (code) DO UPDATE SET ` +
-		`(code, description, price` +
+		`(code, description, price, amount` +
 		`) = (` +
-		`EXCLUDED.code, EXCLUDED.description, EXCLUDED.price)` +
+		`EXCLUDED.code, EXCLUDED.description, EXCLUDED.price, EXCLUDED.amount)` +
 		` RETURNING id`
 	// run query
-	err = q.db.GetRaw(&g.ID, sqlstr, g.Code, g.Description, g.Price)
+	err = q.db.GetRaw(&g.ID, sqlstr, g.Code, g.Description, g.Price, g.Amount)
 	if err != nil {
 		return err
 	}
@@ -128,7 +128,7 @@ func (q GoodQ) GoodByCode(code string) (*data.Good, error) {
 	var err error
 	// sql query
 	const sqlstr = `SELECT ` +
-		`id, code, description, price ` +
+		`id, code, description, price, amount ` +
 		`FROM public.goods ` +
 		`WHERE code = $1`
 
@@ -153,7 +153,7 @@ func (q GoodQ) GoodByID(id int) (*data.Good, error) {
 	var err error
 	// sql query
 	const sqlstr = `SELECT ` +
-		`id, code, description, price ` +
+		`id, code, description, price, amount ` +
 		`FROM public.goods ` +
 		`WHERE id = $1`
 

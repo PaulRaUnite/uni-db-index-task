@@ -9,4 +9,5 @@ type Good struct {
 	Code        string  `db:"code"`        // code
 	Description string  `db:"description"` // description
 	Price       float64 `db:"price"`       // price
+	Amount      int16   `db:"amount"`      // amount
 }

@@ -47,6 +47,7 @@ func Run(ctx context.Context, config config.Config) {
 	r.Get("/user/{username}/invoice/{invoice-id}", user.GetInvoice)
 	r.Get("/user/{username}/complaints", user.GetComplaints)
 	r.Get("/inventory/good", inventory.GetGoods)
+	r.Get("/inventory/good/count", inventory.GetGoodsCount)
 	r.Get("/inventory/good/{id}", inventory.GetSingleGood)
 	r.Get("/complaint", complaint.GetAll)
 	r.Post("/complaint", complaint.Create)

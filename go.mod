@@ -35,10 +35,11 @@ require (
 	github.com/tidwall/pretty v1.0.0 // indirect
 	github.com/xdg/scram v0.0.0-20180814205039-7eeb5667e42c // indirect
 	github.com/xdg/stringprep v1.0.0 // indirect
-	gitlab.com/distributed_lab/ape v1.2.0
+	gitlab.com/distributed_lab/ape v1.4.0
 	gitlab.com/distributed_lab/figure v2.1.0+incompatible
-	gitlab.com/distributed_lab/kit v1.4.0
+	gitlab.com/distributed_lab/kit v1.6.0
 	gitlab.com/distributed_lab/logan v3.7.2+incompatible
+	gitlab.com/distributed_lab/urlval v1.0.2
 	go.mongodb.org/mongo-driver v1.1.3
 	golang.org/x/crypto v0.0.0-20191206172530-e9b2fee46413 // indirect
 	golang.org/x/sys v0.0.0-20191206220618-eeba5f6aabab // indirect

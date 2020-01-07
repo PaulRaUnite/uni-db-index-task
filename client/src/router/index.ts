@@ -7,6 +7,7 @@ import Inventory from "@/views/Inventory.vue";
 import Users from "@/views/Users.vue";
 import UserPage from "@/views/UserPage.vue";
 import GoodPage from "@/views/GoodPage.vue";
+import Test from "@/views/Test.vue";
 
 Vue.use(VueRouter);
 
@@ -33,11 +34,6 @@ const routes = [
         component: Inventory,
     },
     {
-        path: '/inventory/:id',
-        name: 'good',
-        component: GoodPage,
-    },
-    {
         path: '/users',
         name: 'users',
         component: Users,
@@ -46,6 +42,12 @@ const routes = [
         path: '/user/:username',
         name: 'user',
         component: UserPage,
+    },
+    {
+        path: '/test',
+        name: 'test',
+        meta: {layout: "test"},
+        component: Test,
     },
     {
         path: "*",
