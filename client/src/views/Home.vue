@@ -11,13 +11,9 @@
         <ul>
             <li><router-link to="/auth#signin">Log in</router-link></li>
             <li><router-link to="/auth#signup">Sign up</router-link></li>
-        </ul>
-        <p>TODO:</p>
-        <ul>
             <li><router-link to="/user/paulra">Account</router-link></li>
-            <li><router-link to="/home">App template</router-link></li>
+            <li><router-link to="/home">Home</router-link></li>
             <li><router-link to="/complaints">Complaints</router-link></li>
-            <li><router-link to="/orders">Orders</router-link></li>
             <li><router-link to="/inventory">Inventory</router-link></li>
         </ul>
     </va-page>

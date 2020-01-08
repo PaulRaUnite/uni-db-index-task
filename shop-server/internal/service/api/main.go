@@ -5,16 +5,15 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/PaulRaUnite/uni-db-index-task/shop-server/internal/service/api/handlers/survey"
-
-	"github.com/PaulRaUnite/uni-db-index-task/shop-server/internal/service/api/handlers/complaint"
-	"github.com/PaulRaUnite/uni-db-index-task/shop-server/internal/service/api/handlers/user"
-
 	"github.com/go-chi/chi"
+	"gitlab.com/distributed_lab/ape"
 
 	"github.com/PaulRaUnite/uni-db-index-task/shop-server/internal/config"
+	"github.com/PaulRaUnite/uni-db-index-task/shop-server/internal/service/api/handlers/complaint"
+	"github.com/PaulRaUnite/uni-db-index-task/shop-server/internal/service/api/handlers/country"
 	"github.com/PaulRaUnite/uni-db-index-task/shop-server/internal/service/api/handlers/inventory"
-	"gitlab.com/distributed_lab/ape"
+	"github.com/PaulRaUnite/uni-db-index-task/shop-server/internal/service/api/handlers/survey"
+	"github.com/PaulRaUnite/uni-db-index-task/shop-server/internal/service/api/handlers/user"
 )
 
 func Run(ctx context.Context, config config.Config) {
@@ -44,6 +43,7 @@ func Run(ctx context.Context, config config.Config) {
 	r.Get("/user/login", user.LogIn)
 	r.Post("/user/signup", user.SignUp)
 	r.Get("/user/{username}/invoice", user.GetInvoices)
+	r.Post("/invoice/", user.CreateInvoice)
 	r.Get("/user/{username}/invoice/{invoice-id}", user.GetInvoice)
 	r.Get("/user/{username}/complaints", user.GetComplaints)
 	r.Get("/inventory/good", inventory.GetGoods)
@@ -60,6 +60,7 @@ func Run(ctx context.Context, config config.Config) {
 	r.Post("/survey/template", survey.CreateTemplate)
 	r.Get("/survey/template/{id}", survey.GetTemplate)
 	r.Patch("/survey/template/{id}", survey.UpdateTemplate)
+	r.Get("/country/", country.GetAll)
 
 	log.Info("started")
 	ape.Serve(ctx, r, config, ape.ServeOpts{ShutdownTimeout: 100 * time.Millisecond})

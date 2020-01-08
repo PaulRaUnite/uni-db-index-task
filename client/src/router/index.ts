@@ -6,8 +6,9 @@ import AuthPage from "@/views/AuthPage.vue";
 import Inventory from "@/views/Inventory.vue";
 import Users from "@/views/Users.vue";
 import UserPage from "@/views/UserPage.vue";
-import GoodPage from "@/views/GoodPage.vue";
+import CartPage from "@/views/CartPage.vue";
 import Test from "@/views/Test.vue";
+import store from '../store';
 
 Vue.use(VueRouter);
 
@@ -44,6 +45,11 @@ const routes = [
         component: UserPage,
     },
     {
+        path: "/cart",
+        name: "cart",
+        component: CartPage,
+    },
+    {
         path: '/test',
         name: 'test',
         meta: {layout: "test"},
@@ -60,18 +66,18 @@ const router = new VueRouter({
     base: process.env.BASE_URL,
     routes,
 });
-//
-// router.beforeEach((to, from, next) => {
-//     // redirect to login page if not logged in and trying to access a restricted page
-//     const publicPages = ['/login', "/"];
-//     const authRequired = !publicPages.includes(to.path);
-//     const loggedIn = sessionStorage.getItem('jwt');
-//
-//     if (authRequired && !loggedIn) {
-//         return next('/login');
-//     }
-//
-//     next();
-// });
+
+router.beforeEach((to, from, next) => {
+    // redirect to login page if not logged in and trying to access a restricted page
+    const publicPages = ['/auth', "/", "/inventory", "/test"];
+    const authRequired = !publicPages.includes(to.path);
+    const loggedIn = store.state.token !== null;
+
+    if (authRequired && !loggedIn) {
+        return next('/auth');
+    }
+
+    next();
+});
 
 export default router;

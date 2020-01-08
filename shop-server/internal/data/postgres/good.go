@@ -2,6 +2,7 @@ package postgres
 
 import (
 	"context"
+	"strings"
 
 	"github.com/Masterminds/squirrel"
 	"github.com/PaulRaUnite/uni-db-index-task/shop-server/internal/data"
@@ -10,7 +11,7 @@ import (
 
 func applySelector(query squirrel.SelectBuilder, selector data.GoodSelector) squirrel.SelectBuilder {
 	if selector.Description != nil {
-		query = query.Where("to_tsvector(description) @@ to_tsquery(?)", selector.Description)
+		query = query.Where("to_tsvector(description) @@ to_tsquery(?)", strings.Join(strings.Split(*selector.Description, " "), " & "))
 	}
 	query = selector.ApplyTo(query, "id")
 	return query
@@ -30,7 +31,7 @@ func (q GoodQ) All(selector data.GoodSelector) ([]data.Good, error) {
 func (q GoodQ) AllCount(description *string) (int64, error) {
 	query := squirrel.Select("COUNT(*)").From("goods")
 	if description != nil {
-		query = query.Where("to_tsvector(description) @@ to_tsquery(?)", description)
+		query = query.Where("to_tsvector(description) @@ to_tsquery(?)", strings.Join(strings.Split(*description, " "), " & "))
 	}
 
 	var count int64

@@ -34,16 +34,9 @@
                 :compact="false"
                 :text-links="false">
             <va-sidebar-group
-                    :items="[{name:'Login', route:'/auth#signin', icon:'sign-in-alt'}]"
-                    title="Basics"
+                    :items="items"
+                    title="Menu"
                     :show-toggle="false"/>
-            <va-sidebar-group
-                    :items="[{name:'View all', route:'/complaints'}]"
-                    title="Complaints"
-                    :show-toggle="false"/>
-            <va-sidebar-group
-                    title="Debug"
-                    :items="debug_values"/>
         </va-sidebar>
 
         <transition>
@@ -54,6 +47,7 @@
 
 <script>
     import InlineAccount from "@/components/InlineAccount";
+
     export default {
         name: "AppLayout",
         components: {InlineAccount},
@@ -61,17 +55,19 @@
             return {}
         },
         computed: {
-            debug_values() {
-                let items = [];
-                if (this.$store.state.logged) {
-                    items.push(
-                        {
-                            name: this.$store.state.user_id.toString()
-                        }
-                    )
+            items() {
+                if (this.$store.state.token !== null) {
+                    return [
+                        {name: 'Inventory', route: '/inventory', icon: 'store-alt'},
+                        {name: 'Complaints', route: '/complaints', icon: 'comments'},
+                    ]
+                } else {
+                    return [
+                        {name: 'Login', route: '/auth#signin', icon: 'sign-in-alt'},
+                        {name: 'Inventory', route: '/inventory', icon: 'store-alt'},
+                    ]
                 }
-                return items
-            }
+            },
         }
     }
 </script>

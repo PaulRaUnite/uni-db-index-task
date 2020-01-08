@@ -30,7 +30,9 @@ type GoodQ interface {
 }
 
 type CountryQ interface {
+	All() ([]Country, error)
 	CountryByID(id int) (*Country, error)
+	CountryByReadableName(readableName string) (*Country, error)
 }
 
 type UserSelector struct {
@@ -48,6 +50,7 @@ type InvoiceQ interface {
 	InvoiceByID(id int64) (*Invoice, error)
 	InvoicesByUser(user_id int) ([]Invoice, error)
 	PartsAndGoodsByInvoice(invoiceID int64) ([]InvoicePart, []Good, error)
+	CreateInvoice(invoice Invoice, parts []InvoicePart) error
 }
 
 type InvoicePartQ interface {

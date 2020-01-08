@@ -25,7 +25,7 @@
         <div>
             <va-row :gutter="15">
                 <va-column :xs="12" :sm="6" :md="4" v-for="g in goods" class="good-card">
-                    <good :id="g.id" :description="g.description" :amount="g.amount"/>
+                    <good :id="g.id" :description="g.description" :amount="g.amount" :price="g.price"/>
                 </va-column>
             </va-row>
             <va-pagination :total="totalNumber" :per-page="limit" :value="pageNumber" @change="fetchData"/>
@@ -71,8 +71,12 @@
                     })
                 });
                 get_goods(this.$store.state.token, this.descriptionFilter, e.pageNumber, e.perPage)
-                    .then(result => {
-                        this.goods = result;
+                    .then((result) => {
+                        this.goods = result.map((v) => {
+                            v.id = Number.parseInt(v.id);
+                            v.price = Number.parseInt(v.price);
+                            return v
+                        });
                     })
                     .catch(reason => {
                         this.notification.warning({

@@ -100,3 +100,15 @@ type Complaint struct {
 type Counter struct {
 	Value int64 `jsonapi:"attr,value"`
 }
+
+type Country struct {
+	ID           int    `jsonapi:"primary,countries"`
+	ReadableName string `jsonapi:"attr,readable_name"`
+}
+
+func PopulateCountry(country data.Country) *Country {
+	return &Country{
+		ID:           country.ID,
+		ReadableName: country.ReadableName,
+	}
+}

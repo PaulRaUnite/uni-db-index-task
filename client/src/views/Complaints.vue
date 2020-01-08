@@ -22,11 +22,11 @@
         <va-loading v-if="loading" center/>
         <va-row :gutter="15">
             <va-column :xs="12" :sm="6" :md="6">
-                <h2>Not reviewed</h2>
+                <h2>Not reviewed <va-badge class="badge" type="primary">{{unreviewed.length}}</va-badge></h2>
                 <complaint v-for="c in unreviewed" v-on:reviewed="fetchData" :complaint="c"/>
             </va-column>
             <va-column :xs="12" :sm="6" :md="6">
-                <h2>Reviewed</h2>
+                <h2>Reviewed <va-badge class="badge" type="primary">{{reviewed.length}}</va-badge></h2>
                 <complaint v-for="c in reviewed" :complaint="c"/>
             </va-column>
         </va-row>

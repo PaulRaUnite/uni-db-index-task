@@ -12,13 +12,15 @@ interface State {
     account_type: number | null
     logged: boolean
     layout: string
+    cart: Object
+    cart_total: number
 }
 
 const vuexLocal = new VuexPersistence<State>({
     storage: window.sessionStorage
 });
 
-export default new Vuex.Store<State>({
+const store = new Vuex.Store<State>({
     state: {
         token: null,
         user_id: null,
@@ -26,6 +28,8 @@ export default new Vuex.Store<State>({
         logged: false,
         layout: 'app-layout',
         account_type: null,
+        cart: {},
+        cart_total: 0,
     },
     mutations: {
         signin(state: State, payload: { token: string, username: string }) {
@@ -42,9 +46,27 @@ export default new Vuex.Store<State>({
             state.logged = false;
             state.account_type = null;
             state.username = null;
+            state.cart = {};
+            state.cart_total = 0;
         },
+        add_to_cart(state: State, payload: { id: number, amount: number, price: number, description: String }) {
+            let m = state.cart;
+            m[payload.id] = payload;
+            state.cart = m;
+            let total = 0;
+            for (let [key, item] of Object.entries(m)) {
+                total += item.amount * item.price;
+            }
+            state.cart_total = total;
+        },
+        clear_cart(state: State) {
+            state.cart = {};
+            state.cart_total = 0;
+        }
     },
     actions: {},
     modules: {},
     plugins: [vuexLocal.plugin]
 });
+
+export default store;

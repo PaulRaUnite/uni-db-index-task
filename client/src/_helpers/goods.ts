@@ -3,7 +3,7 @@ import {Deserializer} from "ts-jsonapi";
 import {withjwt} from "@/_helpers/withjwt";
 import {jsoner} from "@/_helpers/jsoner";
 
-export function get_goods(jwt: string, description: String | null, page: number, limit: number): Promise<Any> {
+export function get_goods(jwt: string, description: String | null, page: number, limit: number): Promise<any> {
     let descr = (description !== null || description == "") ? `&filter[description]=${description}` : "";
     return jsoner(withjwt(`http://api.localhost/inventory/good?page[number]=${page}&page[limit]=${limit}&page[order]=desc` + descr, jwt)).then((json) => {
         return new Deserializer({keyForAttribute: "snake_case"}).deserialize(json)

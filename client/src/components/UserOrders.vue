@@ -12,29 +12,34 @@
                     <va-lozenge class="lozenge" type="default" :uppercase="true">{{o.date}}</va-lozenge>
                     <va-lozenge class="lozenge" type="success" :uppercase="true">{{o.status}}</va-lozenge>
                 </div>
-            <va-collapse-panel header="Details">
-                <va-table :hover="true">
-                    <table>
-                        <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Amount</th>
-                            <th>Price</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr v-for="p in o.invoice_parts">
-                            <td><router-link :to="`/inventory/${p.good.id}`">{{p.good.description}}</router-link></td>
-                            <td>{{p.quantity}}</td>
-                            <td>{{p.good.price}}&#163;</td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </va-table>
-                <div>
-                    <h3>Total: {{o.total_price.toFixed(2)}}&#163;</h3>
-                </div>
-            </va-collapse-panel>
+                <va-collapse-panel header="Details">
+                    <va-table :hover="true">
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Amount</th>
+                                <th>Price</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr v-for="p in o.invoice_parts">
+                                <td>
+                                    <router-link :to="`/inventory/${p.good.id}`">{{p.good.description}}</router-link>
+                                </td>
+                                <td>{{p.quantity}}</td>
+                                <td>{{p.good.price}}&#163;</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </va-table>
+                    <div>
+                        <h4>Destination country: {{o.destination_country}}</h4>
+                    </div>
+                    <div>
+                        <h3>Total: {{o.total_price.toFixed(2)}}&#163;</h3>
+                    </div>
+                </va-collapse-panel>
             </va-card>
         </va-collapse>
     </va-card>
@@ -71,7 +76,7 @@
                     .then((data) => {
                         console.log(data);
                         this.orders = data.map((v, i, _) => {
-                            v.date = new Date(v.date*1000).toDateString();
+                            v.date = new Date(v.date * 1000).toDateString();
                             v.total_price = v.invoice_parts.reduce((pre, curr, _) => {
                                 return Number.parseFloat(curr.good.price) + pre
                             }, 0);
@@ -124,6 +129,7 @@
     .title {
         height: 34px;
     }
+
     h2 {
         float: left;
         display: inline-block;

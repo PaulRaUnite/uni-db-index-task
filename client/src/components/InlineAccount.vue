@@ -12,6 +12,10 @@
                            icon-before="user-cog">
                     Account
                 </va-button>
+                <va-button block @click="() => $router.push(`/cart`)"
+                           icon-before="shopping-cart">
+                    In cart: {{$store.state.cart_total}}&#163;
+                </va-button>
                 <va-button block icon-before="sign-out-alt" @click="logout">
                     Sign out
                 </va-button>
@@ -26,7 +30,6 @@
     export default {
         name: "InlineAccount",
         components: {SignIn},
-        comments: {"sign-in": SignIn},
         computed: {
             icon_type() {
                 if (!this.$store.state.logged) {
@@ -38,7 +41,8 @@
         },
         methods: {
             logout() {
-                this.$store.commit("signout")
+                this.$store.commit("signout");
+                this.$router.push("/inventory")
             }
         }
     }
