@@ -1,3 +1,17 @@
+/*
+Categorization/filtering parameters:
+- defined good
+- good category
+- country of order
+- year or period of time
+
+Target paramaters of interest:
+- average cart size
+- average cart price
+- busyest days/months in the defined period
+- sale dynamics (current/last year or similar)
+*/
+
 CREATE KEYSPACE shop
             WITH replication = {'class':'SimpleStrategy', 'replication_factor' : 3};
 
