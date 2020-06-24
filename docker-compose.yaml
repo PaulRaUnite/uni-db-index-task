@@ -79,15 +79,6 @@ services:
       - "traefik.http.routers.frontend.entrypoints=web"
       - "traefik.http.services.frontend-service.loadbalancer.server.port=8080"
 
-  cassandra-db:
-    image: cassandra
-    networks:
-      - inter-net
-    volumes:
-      - cassandra-v:/var/lib/cassandra
-    ports:
-      - "9042:9042"
-
 networks:
   inter-net:
 
@@ -95,4 +86,3 @@ volumes:
   shop-data:
   trash-data:
   mongo-config:
-  cassandra-v:
