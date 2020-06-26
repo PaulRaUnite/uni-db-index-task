@@ -17,118 +17,93 @@ CREATE KEYSPACE shop
 
 use shop;
 
-create table users_by_id
-(
-    id        bigint primary key,
-    username  varchar,
-    pass_hash varchar
-);
 
-create table users_by_credentials
-(
-    id        bigint,
-    username  varchar,
-    pass_hash varchar,
-    primary key ((username, pass_hash))
-);
-
-create table goods_by_id
+create table goods
 (
     description varchar,
     price       float,
-    code        varchar,
-    id          bigint primary key,
+    code        varchar primary key
 );
-
-create table goods_by_keyword_asc
-(
-    keyword     varchar,
-    description varchar,
-    price       float,
-    code        varchar,
-    id          bigint,
-    primary key (keyword, price, id )
-) with clustering order by (price asc);
-
-create table goods_by_keyword_desc
-(
-    keyword varchar,
-    price   float,
-    code    varchar,
-    id      bigint,
-    primary key (keyword, price, id )
-) with clustering order by (price desc);
 
 create type order_part (
     amount int,
     good_description varchar,
     good_price float,
-    good_code varchar,
-    good_id bigint,
+    good_code varchar
     );
 
-create table orders_by_customer
+create table orders
 (
-    id                  bigint,
     customer_id         int,
-    destination_country varchar,
-    created_at          timestamp,
-    ordered             list<frozen<order_part>>,
-    primary key (customer_id, created_at)
-) with clustering order by (created_at asc);
-
-create table orders_by_year_month
-(
-    id                  bigint,
-    customer_id         int,
+    invoice_no          varchar,
     destination_country varchar,
     created_at          timestamp,
     ordered             list<frozen<order_part>>,
 
-    year                int,
-    month               int,
-    day                 int,
-    primary key ((year, month), day, id)
-) with clustering order by (day asc, id asc);
+    primary key ( customer_id, invoice_no )
+);
 
-create table orders_by_country_year_month
+create table orders_raw
 (
-    id                  bigint,
-    customer_id         int,
     destination_country varchar,
     created_at          timestamp,
-    ordered             list<frozen<order_part>>,
+    stock_code          varchar,
+    quantity            int,
+    unit_price          float,
+    primary key ( stock_code, created_at )
+);
 
-    year                int,
-    month               int,
-    day                 int,
-    primary key ((destination_country, year, month), day, id)
-) with clustering order by (day asc, id asc);
+create type good_stat (
+    price float,
+    bought int,
+    total_price float
+    );
+
+create table orders_stats_by_keyword
+(
+    keyword      varchar,
+    date         date,
+
+    order_amount int,
+    total_price  float,
+    goods        map<varchar, frozen<good_stat>>,
+
+
+    primary key (keyword, date)
+);
+
+create table orders_stats_by_county
+(
+    country      varchar,
+    date         date,
+
+    order_amount int,
+    total_price  float,
+
+    goods        map<varchar, frozen<good_stat>>,
+    primary key (country, date)
+);
+
+create table orders_stats_by_good
+(
+    good_code    varchar,
+    date         date,
+
+    order_amount int,
+    total_price  float,
+    goods        map<varchar, frozen<good_stat>>,
+
+    primary key (good_code, date)
+);
 
 select *
-from goods_by_id
-where id = 1;
+from orders_stats_by_keyword;
 
 select *
-from goods_by_keyword_asc
-where keyword in ('tea', 'biscuits');
+from orders_stats_by_county;
 
-select *
-from users_by_credentials
-where username = 'merchant_from_france'
-  and pass_hash = 'asa2fa12tu78osdhas512hd7i';
-
-select *
-from orders_by_customer
-where customer_id = 1;
-
-select *
-from orders_by_year_month
-where year = 2020
-  and month in (1,2,3,4);
-
-select *
-from orders_by_country_year_month
-where destination_country = 'france'
-  and year = 2020
-  and month in (1,2,3,4);
+select total_price, order_amount
+from orders_stats_by_keyword
+where keyword = 'tea'
+  and "date" > '2010-01-01'
+group by keyword;
