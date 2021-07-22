@@ -1,6 +1,6 @@
 [[constraint]]
-  branch = "master"
   name = "github.com/getsentry/raven-go"
+  version = "0.2.0"
 
 [[constraint]]
   name = "github.com/go-ozzo/ozzo-validation"
